@@ -43,8 +43,8 @@ function AuthPage() {
     <div className="w-screen h-screen bg-dark-bg flex justify-center items-center font-sans">
       <form className="bg-custom-dark-gray flex-col justify-center items-center w-1/2 h-5/6 rounded-lg text-white" onSubmit={handleSubmit(onSubmit)}>
         <div className="w-full h-20 text-4xl text-white flex justify-between items-center">
-          <div className={`bg-${activeTab === "signin" ? "custom-blue" : "custom-light-gray"} flex-1 rounded-l-lg h-full flex items-center justify-center hover:scale-105 active:scale-95 active:text-gray-400`} onClick={handleSignIn}>Sign in</div>
-          <div className={`bg-${activeTab === "login" ? "custom-blue" : "custom-light-gray"} flex-1 rounded-r-lg h-full flex items-center justify-center hover:scale-105 active:scale-95 active:text-gray-400`} onClick={handleLogIn}>Log in</div>
+          <div className={`bg-${activeTab === "signin" ? "custom-blue" : "custom-light-gray"} flex-1 rounded-l-lg h-full flex items-center justify-center hover:scale-105 active:scale-95 active:text-gray-400 !important`} onClick={handleSignIn}>Sign in</div>
+          <div className={`bg-${activeTab === "login" ? "custom-blue" : "custom-light-gray"} flex-1 rounded-r-lg h-full flex items-center justify-center hover:scale-105 active:scale-95 active:text-gray-400 !important`} onClick={handleLogIn}>Log in</div>
         </div>
         <div className="flex flex-col items-center gap-6 mt-3 w-full text-2xl">
           <div className="my-4 w-1/2">
@@ -55,7 +55,7 @@ function AuthPage() {
               placeholder="user name"
             />
             {errors.userName && (
-            <p role="alert" className="text-red-500">First name is required</p>
+            <p role="alert" className="text-red-500">Oups, somethis wrong with User Name</p>
             )}
           </div>
           <div className="my-4 w-1/2">
@@ -65,11 +65,11 @@ function AuthPage() {
               {...register("email", { required: true, minLength: 5, maxLength: 100, pattern: /^\S+@\S+$/i})}
               placeholder="email@gmail.com"
             />
-            {errors.email && <p className="text-red-500">Пожалуйста, введите правильный адрес электронной почты</p>}
+            {errors.email && <p className="text-red-500">Please, enter the correct email</p>}
           </div>
           <div className="my-4 w-1/2">
             <label className="block">Password:</label>
-            <input type="pa"
+            <input type="password"
               className="text-gray-500 w-full px-0 py-1 rounded-lg focus:outline-none"
               {...register("password", { required: true, minLength: 5, maxLength: 100 })}
               placeholder="password123"
