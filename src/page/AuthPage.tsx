@@ -62,7 +62,7 @@ function AuthPage() {
             <label className="block">Email:</label>
             <input
               className="text-gray-500 w-full px-0 py-1 rounded-lg focus:outline-none"
-              {...register("email", { required: true, minLength: 5, maxLength: 100, pattern: /^\S+@\S+$/i})}
+              {...register("email", { required: true, minLength: 5, maxLength: 100, pattern: /^\S+@\S+\.\S+$/i})}
               placeholder="email@gmail.com"
             />
             {errors.email && <p className="text-red-500">Please, enter the correct email</p>}
