@@ -1,89 +1,41 @@
-import { useForm, SubmitHandler } from "react-hook-form";
-import Button from "../component/Button";
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
-
-interface IFormInput {
-  userName: string;
-  email: string;
-  password: string;
-}
+import Button from "../component/Button";
+import LoginForm from "../component/LoginForm";
+import SignUpForm from "../component/SignUpForm";
+import { motion } from "framer-motion";
 
 function AuthPage() {
-  const navigate = useNavigate();
+    const [isLoginForm, setIsLoginForm] = useState(false);
 
-  const [activeTab , setActiveTab]  = useState("signin");
-
-  const handleSignIn = () =>
-  {
-    setActiveTab("signin");
-  }
-
-  const handleLogIn = () =>
-  {
-    setActiveTab("login");
-  }
-
-  const { register, formState: {errors}, handleSubmit, reset} = useForm<IFormInput>({
-    defaultValues: {
-      userName: "",
-      email: "",
-      password: ""
-    }
-  });
-
-  const onSubmit: SubmitHandler<IFormInput> = (data) => 
-    { 
-      console.log(data);
-      reset();
-      navigate("/search");
+    const handleFormChange = (target: string) => {
+        if (target === "Sign Up" && isLoginForm) {
+            setIsLoginForm(false);
+        } else if (target === "Login" && !isLoginForm) {
+            setIsLoginForm(true);
+        }
     }
 
-  return (
-    <div className="w-screen h-screen bg-dark-bg flex justify-center items-center font-sans">
-      <form className="bg-custom-dark-gray flex-col justify-center items-center w-1/2 h-5/6 rounded-lg text-white" onSubmit={handleSubmit(onSubmit)}>
-        <div className="w-full h-20 text-4xl text-white flex justify-between items-center">
-          <div className={`bg-${activeTab === "signin" ? "custom-blue" : "custom-light-gray"} flex-1 rounded-l-lg h-full flex items-center justify-center hover:scale-105 active:scale-95 active:text-gray-400 !important`} onClick={handleSignIn}>Sign in</div>
-          <div className={`bg-${activeTab === "login" ? "custom-blue" : "custom-light-gray"} flex-1 rounded-r-lg h-full flex items-center justify-center hover:scale-105 active:scale-95 active:text-gray-400 !important`} onClick={handleLogIn}>Log in</div>
+    return (
+        <div className="w-screen h-screen bg-dark-bg flex justify-center items-center font-sans text-white">
+            <motion.div 
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="w-1/2 h-5/6 bg-custom-dark-gray flex flex-col justify-start items-center rounded-lg">
+                <div className="w-full h-1/6 flex justify-center items-center text-3xl font-extrabold">
+                    <Button text="Sign Up" onClick={() => handleFormChange("Sign Up")} 
+                        className={`w-1/2 h-full rounded-l-lg rounded-b-none transition-all 
+                                    ${isLoginForm ? 'bg-custom-light-gray' : 'bg-custom-blue'}`}/>
+                    <Button text="Login" onClick={() => handleFormChange("Login")}
+                        className={`w-1/2 h-full rounded-r-lg rounded-b-none transition-all 
+                                    ${isLoginForm ? 'bg-custom-blue' : 'bg-custom-light-gray'}`}/>
+                </div>
+                <div className="w-full h-5/6">
+                    {isLoginForm ? <LoginForm /> : <SignUpForm />}
+                </div>
+            </motion.div>
         </div>
-        <div className="flex flex-col items-center gap-6 mt-3 w-full text-2xl">
-          <div className="my-4 w-1/2">
-            <label className="block">User Name:</label>
-            <input
-              className="text-gray-500 w-full px-0 py-1  rounded-lg focus:outline-none"
-              {...register("userName", { required: true, minLength: 5, maxLength: 100 })}
-              placeholder="user name"
-            />
-            {errors.userName && (
-            <p role="alert" className="text-red-500">Oups, somethis wrong with User Name</p>
-            )}
-          </div>
-          <div className="my-4 w-1/2">
-            <label className="block">Email:</label>
-            <input
-              className="text-gray-500 w-full px-0 py-1 rounded-lg focus:outline-none"
-              {...register("email", { required: true, minLength: 5, maxLength: 100, pattern: /^\S+@\S+\.\S+$/i})}
-              placeholder="email@gmail.com"
-            />
-            {errors.email && <p className="text-red-500">Please, enter the correct email</p>}
-          </div>
-          <div className="my-4 w-1/2">
-            <label className="block">Password:</label>
-            <input type="password"
-              className="text-gray-500 w-full px-0 py-1 rounded-lg focus:outline-none"
-              {...register("password", { required: true, minLength: 5, maxLength: 100 })}
-              placeholder="password123"
-            />
-          </div>
-          <Button
-            className="bg-custom-green border-none  text-2xl font-semibold rounded-lg w-2/6 p-4 transition-all hover:scale-105 active:scale-95 active:text-gray-400"
-            text="Submit"
-            onClick={()=>onSubmit}
-          />
-        </div>
-      </form>
-    </div>
-  );
+    );
 }
 
 export default AuthPage;
