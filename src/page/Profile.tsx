@@ -10,6 +10,7 @@ import LoadingPage from "./LoadingPage";
 import ErrorPage from "./ErrorPage";
 import useAuthStore from "../store/auth";
 import Button from "../component/Button";
+import { motion } from "framer-motion";
 
 function Profile(){
     const location = useLocation();
@@ -49,7 +50,11 @@ function Profile(){
             <div className="w-1/12">
                 <SideBar/>
             </div>
-            <div className="w-3/4 p-5 flex flex-col items-start gap-10">
+            <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="w-3/4 p-5 flex flex-col items-start gap-10">
                 <div className="w-full h-1/5 flex justify-end items-center">
                     <div className="w-1/6 h-full flex justify-start items-center">
                         <BsPersonCircle className="text-6xl"/>
@@ -98,7 +103,7 @@ function Profile(){
                     </div>
                 </div>
                 {newUserTip && <p>Welcome to TeamCode! We're excited to have you on board.</p>}
-            </div>
+            </motion.div>
         </div>
     );
 }
