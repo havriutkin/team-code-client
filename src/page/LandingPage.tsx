@@ -2,12 +2,31 @@ import TeamCodeLogo from '/TeamCodeLogo.png'
 import Button from '../component/Button';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import useAuthStore from '../store/auth';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 function LandingPage() {
+    const { principal, getPrincipal } = useAuthStore();
+    const [isAuthorised, setIsAuthorised] = useState(false);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        getPrincipal().then(principal => {
+            if(!principal) {
+                setIsAuthorised(false);
+            } else {
+                setIsAuthorised(true);
+            }
+        })
+    }, []);
+
     const handleButtonClick = () => { 
-        navigate('/auth');
+        if (isAuthorised) {
+            navigate('/profile', {state: { email: principal?.email }});
+        } else {
+            navigate('/auth');
+        }
     }
 
     return (
@@ -19,10 +38,10 @@ function LandingPage() {
                 className="h-1/6 flex justify-between items-start"
             >
                 <h1 className="text-5xl font-extrabold">TeamCode</h1>
-                <Button text="Login"
+                {!isAuthorised && <Button text="Login"
                     className='border text-2xl font-semibold rounded-lg w-1/12 h-1/2 text-center
                             transition-all hover:scale-105 active:scale-95 active:text-gray-400'
-                    onClick={handleButtonClick} />
+                    onClick={handleButtonClick} />}
             </motion.div>
 
             <motion.div 

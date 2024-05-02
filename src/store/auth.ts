@@ -3,30 +3,55 @@ import axios from "axios";
 
 const ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
-interface AuthState {
+interface Principal {
+    id: number;
     email: string;
+}
+
+interface AuthState {
+    principal: Principal | null;
     token: string;
     isLoading: boolean;
     error: string;
 }
 
 interface AuthActions {
-    setEmail: (email: string) => void;
-    getToken: () => string;
+    getPrincipal: () => Promise<Principal | null>;
     register: (username: string, email: string, password: string) => Promise<void>;
     login: (email: string, password: string) => Promise<void>;
     logout: () => void;
 }
 
 const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
-    email: "",
     token: localStorage.getItem("token") || "",
+    principal: null,
     isLoading: false,
     error: "",
 
-    setEmail: (email: string) => set({ email }),
+    getPrincipal: async () => {
+        const token = get().token;
+        if (!token) {
+            return null;
+        }
+        
+        if (get().principal) {
+            return get().principal
+        }
+        
+        const response = await axios.get(`${ENDPOINT}/auth/user`, {
+            headers: {
+                Authorization: `Bearer ${get().token}`
+            }
+        });
 
-    getToken: () => get().token,
+        if (response.status === 200) {
+            const principal = response.data as Principal;
+            set({ principal })
+            return principal;
+        } else {
+            return null;
+        }
+    },
 
     register: async (username: string, email: string, password: string) => {
         set({ isLoading: true });
@@ -34,7 +59,7 @@ const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
             const response = await axios.post(`${ENDPOINT}/auth/register`, { name: username, email, password });
             if (response.status === 200) {
                 const token = response.data.token;
-                set({ email, token });
+                set({ token });
                 localStorage.setItem("token", token);
             } else {
                 set({ error: "Registration failed" });
@@ -52,7 +77,7 @@ const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
             const response = await axios.post(`${ENDPOINT}/auth/login`, { email, password });
             if (response.status === 200) {
                 const token = response.data.token;
-                set({ email, token });
+                set({ token });
                 localStorage.setItem("token", token);
             } else {
                 set({ error: "Login failed" });
@@ -65,7 +90,7 @@ const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
     },
 
     logout: () => {
-        set({ email: "", token: "", error: "" });
+        set({ principal: null, token: "", error: "" });
         localStorage.removeItem("token");
     },
 }));

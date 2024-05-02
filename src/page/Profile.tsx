@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import useUserStore from "../store/user";
 import SideBar from "../component/Sidebar";
@@ -8,17 +8,31 @@ import { FaGithub } from "react-icons/fa";
 import { SiLevelsdotfyi } from "react-icons/si";
 import LoadingPage from "./LoadingPage";
 import ErrorPage from "./ErrorPage";
+import useAuthStore from "../store/auth";
+import Button from "../component/Button";
 
 function Profile(){
     const location = useLocation();
     const { email, newUserTip } = location.state;
     const { user, loadUser, isLoading, isError } = useUserStore();
+    const [isOwner, setIsOwner] = useState(false);
+    const { principal, getPrincipal } = useAuthStore();
+
+    useEffect(() =>{
+        getPrincipal();
+    }, [])
 
     useEffect(() => {
         if (email) {
-            loadUser(email);
+            loadUser(email).then(() => {
+                if(user.id === principal?.id) {
+                    setIsOwner(true);
+                } else {
+                    setIsOwner(false)
+                }
+            });
         }
-    }, [email, loadUser]);
+    }, [email, loadUser, principal]);
 
     if (isLoading) {
         return <LoadingPage/>;
@@ -39,7 +53,10 @@ function Profile(){
                         <BsPersonCircle className="text-6xl"/>
                     </div>
                     <div className="w-5/6 h-full flex flex-col justify-between">
-                        <h1 className="font-extrabold text-6xl">{user.name}</h1>
+                        <div className=" w-1/2 flex justify-between items-center">
+                            <h1 className="font-extrabold text-6xl">{user.name}</h1>
+                            {isOwner && <Button text="Edit" className="w-24 h-3/4 rounded-lg text-2xl bg-custom-blue" onClick={() => {}}/>}
+                        </div>
                         <div className="w-full flex justify-between">
                             <div className="w-1/3 flex justify-start items-center gap-2">
                                 <MdEmail className="text-2xl"/>

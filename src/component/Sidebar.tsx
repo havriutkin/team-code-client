@@ -3,13 +3,17 @@ import { GoProjectRoadmap } from "react-icons/go";
 import { CiSearch } from "react-icons/ci";
 import { BsPersonCircle } from "react-icons/bs";
 import TeamCodeLogo from '/TeamCodeLogo.png'
+import { useNavigate } from "react-router-dom";
 
 function SideBar() {
+  const navigate = useNavigate();
+  
   return (
     <div className="w-1/12 h-screen left-0 fixed bg-custom-light-gray rounded-r-3xl">
         <div className="w-full h-1/6 bg-custom-blue flex justify-center items-center 
                      rounded-tr-3xl">
-            <img src={TeamCodeLogo} alt="TeamCodeLogo" className="w-1/2 h-1/2"/>
+            <img src={TeamCodeLogo} alt="TeamCodeLogo" className="w-1/2 h-1/2 transition-all hover:scale-110 active:scale-90"
+                                                       onClick={() => {navigate('/')}}/>
         </div>
         <div className="w-full h-4/6 flex flex-col justify-end items-center">
             <IoIosNotificationsOutline className="m-5 text-4xl hover:scale-110"/>
