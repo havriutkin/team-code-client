@@ -5,7 +5,7 @@ import AuthPage from './page/AuthPage'
 import Profile from './page/Profile'
 
 function App() {
-
+ 
   return (
     <>
       <Routes>

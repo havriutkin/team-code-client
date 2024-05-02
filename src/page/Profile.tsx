@@ -16,23 +16,25 @@ function Profile(){
     const { email, newUserTip } = location.state;
     const { user, loadUser, isLoading, isError } = useUserStore();
     const [isOwner, setIsOwner] = useState(false);
-    const { principal, getPrincipal } = useAuthStore();
-
-    useEffect(() =>{
-        getPrincipal();
-    }, [])
+    const { fetchPrincipal } = useAuthStore();
 
     useEffect(() => {
         if (email) {
-            loadUser(email).then(() => {
-                if(user.id === principal?.id) {
-                    setIsOwner(true);
-                } else {
-                    setIsOwner(false)
+            fetchPrincipal().then((principal) => {
+                if (!principal) {
+                    return;
                 }
+
+                loadUser(email).then(() => {
+                    if(user.id === principal?.id) {
+                        setIsOwner(true);
+                    } else {
+                        setIsOwner(false)
+                    }
+                });
             });
         }
-    }, [email, loadUser, principal]);
+    }, [email, loadUser, fetchPrincipal, user.id]);
 
     if (isLoading) {
         return <LoadingPage/>;

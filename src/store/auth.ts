@@ -16,7 +16,7 @@ interface AuthState {
 }
 
 interface AuthActions {
-    getPrincipal: () => Promise<Principal | null>;
+    fetchPrincipal: () => Promise<Principal | null>;
     register: (username: string, email: string, password: string) => Promise<void>;
     login: (email: string, password: string) => Promise<void>;
     logout: () => void;
@@ -28,7 +28,7 @@ const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
     isLoading: false,
     error: "",
 
-    getPrincipal: async () => {
+    fetchPrincipal: async () => {
         const token = get().token;
         if (!token) {
             return null;
@@ -45,7 +45,7 @@ const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
         });
 
         if (response.status === 200) {
-            const principal = response.data as Principal;
+            const principal = {id: response.data.userId, ...response.data} as Principal;
             set({ principal })
             return principal;
         } else {

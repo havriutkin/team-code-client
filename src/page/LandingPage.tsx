@@ -7,22 +7,22 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 
 function LandingPage() {
-    const { principal, getPrincipal } = useAuthStore();
-    const [isAuthorised, setIsAuthorised] = useState(false);
+    const { principal, fetchPrincipal } = useAuthStore();
+    const [isAuthorized, setIsAuthorized] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
-        getPrincipal().then(principal => {
+        fetchPrincipal().then(principal => {
             if(!principal) {
-                setIsAuthorised(false);
+                setIsAuthorized(false);
             } else {
-                setIsAuthorised(true);
+                setIsAuthorized(true);
             }
         })
-    }, []);
+    }, [fetchPrincipal]);
 
     const handleButtonClick = () => { 
-        if (isAuthorised) {
+        if (isAuthorized) {
             navigate('/profile', {state: { email: principal?.email }});
         } else {
             navigate('/auth');
@@ -38,7 +38,7 @@ function LandingPage() {
                 className="h-1/6 flex justify-between items-start"
             >
                 <h1 className="text-5xl font-extrabold">TeamCode</h1>
-                {!isAuthorised && <Button text="Login"
+                {!isAuthorized && <Button text="Login"
                     className='border text-2xl font-semibold rounded-lg w-1/12 h-1/2 text-center
                             transition-all hover:scale-105 active:scale-95 active:text-gray-400'
                     onClick={handleButtonClick} />}

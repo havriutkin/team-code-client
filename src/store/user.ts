@@ -33,10 +33,8 @@ const fetchUser = async (email: string): Promise<User> => {
     });
 
     if (response.status === 200) {
-        console.log(response.data);
         return response.data as User;
     } else {
-        console.error(response.data);
         throw new Error("Error fetching user");
     }
 }
