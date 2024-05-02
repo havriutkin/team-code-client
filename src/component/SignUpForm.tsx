@@ -2,7 +2,6 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Button from "../component/Button";
 import useAuthStore from "../store/auth";
 import { useNavigate } from "react-router-dom";
-import Loading from "./Loading";
 
 type SignUpFormInputs = {
     username: string;

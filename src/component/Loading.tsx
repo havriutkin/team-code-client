@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
-
 interface LoadingProps {
     size: string;
     className?: string;
