@@ -7,6 +7,7 @@ import { MdEmail } from "react-icons/md";
 import { FaGithub } from "react-icons/fa";
 import { SiLevelsdotfyi } from "react-icons/si";
 import LoadingPage from "./LoadingPage";
+import ErrorPage from "./ErrorPage";
 
 function Profile(){
     const location = useLocation();
@@ -24,7 +25,7 @@ function Profile(){
     }
 
     if (isError) {
-        return <div>Error loading user</div>;
+        return <ErrorPage/>;
     }
 
     return (
