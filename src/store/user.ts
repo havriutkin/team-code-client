@@ -47,7 +47,7 @@ const useUserStore = create<UserState & UserActions>((set) => ({
     isError: false,
 
     loadUser: async (email: string) => {
-        set({ isLoading: true });
+        set({ isError: false, isLoading: true });
 
         if (!email) {
             set({ isError: true, isLoading: false});
