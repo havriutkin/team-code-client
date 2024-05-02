@@ -26,8 +26,6 @@ interface UserActions {
 
 const fetchUser = async (email: string): Promise<User> => {
     const token = useAuthStore.getState().token;
-    console.log(token);
-    console.log("Fetching user");
     const response = await axios.get(`${ENDPOINT}/user/email/${email}`, {
         headers: {
             Authorization: `Bearer ${token}`
