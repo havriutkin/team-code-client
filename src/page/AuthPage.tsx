@@ -25,7 +25,7 @@ function AuthPage() {
                 animate={{ scale: 1 }}
                 transition={{ duration: 0.5 }}
                 className="w-1/2 h-5/6 bg-custom-dark-gray flex flex-col justify-start items-center rounded-lg">
-
+                    
                 <div className="w-full h-1/6 flex justify-center items-center text-3xl font-extrabold">
                     <Button text="Sign Up" onClick={() => handleFormChange("Sign Up")} 
                         className={`w-1/2 h-full rounded-l-lg rounded-b-none transition-all 
@@ -34,7 +34,7 @@ function AuthPage() {
                         className={`w-1/2 h-full rounded-r-lg rounded-b-none transition-all 
                                     ${isLoginForm ? 'bg-custom-blue' : 'bg-custom-light-gray'}`}/>
                 </div>
-                
+
                 <div className="w-full h-5/6 overflow-hidden">
                 <AnimatePresence onExitComplete={() => setIsAnimationGoing(false)}>
                         {

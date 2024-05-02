@@ -6,6 +6,7 @@ import { BsPersonCircle } from "react-icons/bs";
 import { MdEmail } from "react-icons/md";
 import { FaGithub } from "react-icons/fa";
 import { SiLevelsdotfyi } from "react-icons/si";
+import LoadingPage from "./LoadingPage";
 
 function Profile(){
     const location = useLocation();
@@ -19,7 +20,7 @@ function Profile(){
     }, [email, loadUser]);
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <LoadingPage/>;
     }
 
     if (isError) {

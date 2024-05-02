@@ -2,6 +2,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Button from "../component/Button";
 import useAuthStore from "../store/auth";
 import { useNavigate } from "react-router-dom";
+import Loading from "./Loading";
 
 type SignUpFormInputs = {
     username: string;
@@ -48,8 +49,9 @@ function SignUpForm() {
                 {errors.password?.type === 'minLength' && <span className="text-red-500">Password is too short</span>}
             </div>
 
-            <Button text={`${isLoading ? "Loading" : "Sign Up"}`} 
+            <Button text="Sign Up"
                     isDisabled={isLoading}
+                    isLoading={isLoading}
                     onClick={handleSubmit(onSubmit)} 
                     className="bg-custom-green text-3xl p-3 font-semibold rounded-lg hover:scale-105 active:scale-95" />
         </form>
