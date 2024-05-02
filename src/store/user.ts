@@ -2,7 +2,6 @@ import { create } from "zustand";
 import axios from "axios";
 import useAuthStore from "./auth";
 
-const { token } = useAuthStore.getState();
 const ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
 interface User {
@@ -26,10 +25,8 @@ interface UserActions {
 }
 
 const fetchUser = async (email: string): Promise<User> => {
-    if (!token) {
-        return {} as User;
-    }
-
+    const token = useAuthStore.getState().token;
+    console.log(token);
     console.log("Fetching user");
     const response = await axios.get(`${ENDPOINT}/user/email/${email}`, {
         headers: {
@@ -54,8 +51,8 @@ const useUserStore = create<UserState & UserActions>((set) => ({
     loadUser: async (email: string) => {
         set({ isLoading: true });
 
-        if (!email || !token) {
-            set({ isError: true });
+        if (!email) {
+            set({ isError: true, isLoading: false});
             return;
         }
 

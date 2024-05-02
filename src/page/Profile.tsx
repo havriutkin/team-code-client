@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import useUserStore from "../store/user";
 import SideBar from "../component/Sidebar";
+import { BsPersonCircle } from "react-icons/bs";
 
 function Profile(){
     const location = useLocation();
@@ -25,10 +26,9 @@ function Profile(){
     return (
         <div className="w-screen h-screen bg-dark-bg font-sans text-white">
             <SideBar/>
-            <div className="w-3/4 flex justify-end items-center">
+            <div className="flex-1 flex justify-end items-center">
                 <div className="w-1/6 h-1/6">
-                    <h1>IMAGE SPACE</h1>
-                    {/* IMAGE SECTION TODO */}
+                    <BsPersonCircle className="text-6xl"/>
                 </div>
                 <div className="w-5/6 flex flex-col">
                     <h1>{user.name}</h1>

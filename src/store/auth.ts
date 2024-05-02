@@ -7,6 +7,7 @@ interface AuthState {
     email: string;
     token: string;
     isLoading: boolean;
+    error: string;
 }
 
 interface AuthActions {
@@ -17,58 +18,56 @@ interface AuthActions {
     logout: () => void;
 }
 
-const register = async (username: string, email: string, password: string): Promise<string> => {
-    const user = {
-        "name": username,
-        "email": email,
-        "password": password,
-    }
-
-    const response = await axios.post(`${ENDPOINT}/auth/register`, user);
-    if (response.status === 200) {
-        return response.data.token as string;
-    }
-    return "";
-}
-
-const login = async (email: string, password: string): Promise<string> => {
-    const response = await axios.post(`${ENDPOINT}/auth/login`, { email, password });
-    if (response.status === 200) {
-        return response.data.token as string;
-    }
-    return "";
-}
-
 const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
     email: "",
-    token: "",
+    token: localStorage.getItem("token") || "",
     isLoading: false,
+    error: "",
 
     setEmail: (email: string) => set({ email }),
 
-    getToken: () => {
-        return get().token;
-    },
+    getToken: () => get().token,
 
     register: async (username: string, email: string, password: string) => {
         set({ isLoading: true });
-        const token = await register(username, email, password);
-        if (token) {
-            set({ email, token });
+        try {
+            const response = await axios.post(`${ENDPOINT}/auth/register`, { name: username, email, password });
+            if (response.status === 200) {
+                const token = response.data.token;
+                set({ email, token });
+                localStorage.setItem("token", token);
+            } else {
+                set({ error: "Registration failed" });
+            }
+        } catch (error) {
+            console.error(error);
+            set({ error: "An error occurred during registration" });
         }
         set({ isLoading: false });
     },
 
     login: async (email: string, password: string) => {
         set({ isLoading: true });
-        const token = await login(email, password);
-        if (token) {
-            set({ email, token });
+        try {
+            const response = await axios.post(`${ENDPOINT}/auth/login`, { email, password });
+            if (response.status === 200) {
+                const token = response.data.token;
+                set({ email, token });
+                localStorage.setItem("token", token);
+            } else {
+                set({ error: "Login failed" });
+            }
+        } catch (error) {
+            console.error(error);
+            set({ error: "An error occurred during login" });
         }
         set({ isLoading: false });
     },
 
-    logout: () => set({ email: "", token: "" }),
+    logout: () => {
+        set({ email: "", token: "", error: "" });
+        localStorage.removeItem("token");
+    },
 }));
 
 export default useAuthStore;
