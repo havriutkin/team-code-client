@@ -1,4 +1,4 @@
-import TeamCodeLogo from '../../public/TeamCodeLogo.png'
+import TeamCodeLogo from '/TeamCodeLogo.png'
 import Button from '../component/Button';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';

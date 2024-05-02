@@ -9,7 +9,7 @@ interface AuthState {
     isLoading: boolean;
 }
 
-interface AuthAction {
+interface AuthActions {
     setEmail: (email: string) => void;
     getToken: () => string;
     register: (username: string, email: string, password: string) => Promise<void>;
@@ -39,7 +39,7 @@ const login = async (email: string, password: string): Promise<string> => {
     return "";
 }
 
-const useAuthStore = create<AuthState & AuthAction>((set, get) => ({
+const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
     email: "",
     token: "",
     isLoading: false,

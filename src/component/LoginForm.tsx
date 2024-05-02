@@ -15,7 +15,7 @@ function LoginForm() {
 
     const onSubmit: SubmitHandler<LoginFormInput> = (data) => {
         login(data.email, data.password).then(() => {
-            navigate('/profile');
+            navigate('/profile', {state: {email: data.email}});
         });
     }
 

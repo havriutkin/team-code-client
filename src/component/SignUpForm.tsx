@@ -16,7 +16,7 @@ function SignUpForm() {
 
     const onSubmit: SubmitHandler<SignUpFormInputs> = (data) => {
         signUp(data.username, data.email, data.password).then(() => {
-            navigate('/profile');
+            navigate('/profile', {state: {email: data.email, newUserTip: true}});
         });
     }
 
