@@ -2,15 +2,18 @@ import { useState } from "react";
 import Button from "../component/Button";
 import LoginForm from "../component/LoginForm";
 import SignUpForm from "../component/SignUpForm";
-import { motion } from "framer-motion";
+import { AnimatePresence, easeInOut, motion } from "framer-motion";
 
 function AuthPage() {
     const [isLoginForm, setIsLoginForm] = useState(false);
+    const [isAnimationGoing, setIsAnimationGoing] = useState(false);
 
     const handleFormChange = (target: string) => {
         if (target === "Sign Up" && isLoginForm) {
+            setIsAnimationGoing(true);
             setIsLoginForm(false);
         } else if (target === "Login" && !isLoginForm) {
+            setIsAnimationGoing(true);
             setIsLoginForm(true);
         }
     }
@@ -30,8 +33,29 @@ function AuthPage() {
                         className={`w-1/2 h-full rounded-r-lg rounded-b-none transition-all 
                                     ${isLoginForm ? 'bg-custom-blue' : 'bg-custom-light-gray'}`}/>
                 </div>
-                <div className="w-full h-5/6">
-                    {isLoginForm ? <LoginForm /> : <SignUpForm />}
+                <div className="w-full h-5/6 overflow-hidden">
+                <AnimatePresence onExitComplete={() => setIsAnimationGoing(false)}>
+                        {
+                            isLoginForm && !isAnimationGoing && 
+                            <motion.div key="login" className="w-full h-full"
+                                initial={{ x: 500, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                exit={{ x: 500, opacity: 0 }}
+                                transition={{ease: easeInOut}}>
+                                <LoginForm />
+                            </motion.div> 
+                        }
+                        {
+                            !isLoginForm && !isAnimationGoing &&
+                            <motion.div key="signup" className="w-full h-full"
+                                initial={{x: -500, opacity: 0}}
+                                animate={{x:0, opacity: 1}}
+                                exit={{x:-500, opacity: 0}}
+                                transition={{ease: easeInOut}}>
+                                <SignUpForm />
+                            </motion.div>
+                        }
+                    </AnimatePresence>
                 </div>
             </motion.div>
         </div>
