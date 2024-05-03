@@ -26,7 +26,7 @@ function SideBar() {
             <CiSearch className="m-5 text-4xl hover:scale-110"/>
         </div>
         <div className="w-full h-1/6 border-t-2 border-white flex justify-center items-center">
-            <BsPersonCircle className="text-6xl"/>
+            <BsPersonCircle className="text-6xl" onClick={() => {navigate("/profile")}}/>
         </div>
     </motion.div>
   );
