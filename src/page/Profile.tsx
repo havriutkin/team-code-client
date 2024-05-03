@@ -10,6 +10,7 @@ import LoadingPage from "./LoadingPage";
 import ErrorPage from "./ErrorPage";
 import useAuthStore from "../store/auth";
 import Button from "../component/Button";
+import ProfileEditForm from "../component/ProfileEditPopup";
 import { motion } from "framer-motion";
 
 function Profile(){
@@ -17,6 +18,7 @@ function Profile(){
     const { email, newUserTip } = location.state;
     const { user, loadUser, isLoading, isError } = useUserStore();
     const [isOwner, setIsOwner] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
     const { fetchPrincipal } = useAuthStore();
 
     useEffect(() => {
@@ -62,7 +64,10 @@ function Profile(){
                     <div className="w-5/6 h-full flex flex-col justify-between">
                         <div className=" w-1/2 flex justify-between items-center">
                             <h1 className="font-extrabold text-6xl">{user.name}</h1>
-                            {isOwner && <Button text="Edit" className="w-24 h-3/4 rounded-lg text-2xl bg-custom-blue" onClick={() => {}}/>}
+                            {isOwner && <Button text="Edit" 
+                                            className="w-24 h-3/4 rounded-lg text-2xl bg-custom-blue transition-all 
+                                                        hover:scale-105 active:scale-95" 
+                                            onClick={() => setIsEditing(true)}/>}
                         </div>
                         <div className="w-full flex justify-between">
                             <div className="w-1/3 flex justify-start items-center gap-2">
@@ -103,6 +108,7 @@ function Profile(){
                     </div>
                 </div>
                 {newUserTip && <p>Welcome to TeamCode! We're excited to have you on board.</p>}
+                {isEditing && <ProfileEditForm onClose={() => setIsEditing(false)}/>}
             </motion.div>
         </div>
     );
