@@ -1,10 +1,12 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import Button from "./Button";
+import useUserStore from "../store/user";
+import {User} from "../store/user";
 
 enum Experience {
-    BEGINNER = "Beginner",
-    INTERMEDIATE = "Intermediate",
-    ADVANCED = "Advanced"
+    BEGINNER = "BEGINNER",
+    INTERMEDIATE = "INTERMEDIATE",
+    ADVANCE = "ADVANCE"
 }
 
 type ProfileEditFormInput = {
@@ -23,11 +25,28 @@ interface ProfileEditFormProps {
 
 function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
     const { register, formState: {errors}, handleSubmit } = useForm<ProfileEditFormInput>();
+    const updateUser = useUserStore(state => state.updateUser);
 
-    const onSubmit: SubmitHandler<ProfileEditFormInput> = (data) => {
+    const onSubmit: SubmitHandler<ProfileEditFormInput> = async (data, e) => {
+        e?.preventDefault();
+        const userData: User = {
+            id: 0,
+            name: data.username,
+            email: data.email,
+            experience: data.experience,
+            bio: data.bio,
+            gitHubLink: data.github,
+            skills: [], // You might not have skills in the form data
+        };
         console.log(data);
-        onSave(data);
-    }
+        console.log(userData);
+        await updateUser(userData).then(() => {
+            onClose(); // Optionally, close the form after successful update
+        }).catch((error : Error) => {
+            // Handle error, show error message, etc.
+            console.error("Error updating user:", error);
+        });
+    };
 
     return (
         <form className="w-full h-full flex flex-col justify-around items-start font-semibold">
@@ -70,7 +89,7 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
                             {...register('experience', {required: true})}>
                             <option value={Experience.BEGINNER}>Beginner</option>
                             <option value={Experience.INTERMEDIATE}>Intermediate</option>
-                            <option value={Experience.ADVANCED}>Advanced</option>
+                            <option value={Experience.ADVANCE}>Advanced</option>
                         </select>
                         {errors.experience?.type === 'required' && <span className="text-red-500">Experience is required</span>}
                     </div>

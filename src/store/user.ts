@@ -4,7 +4,7 @@ import useAuthStore from "./auth";
 
 const ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
-interface User {
+export interface User {
     id: number;
     name: string;
     email: string;
@@ -14,6 +14,7 @@ interface User {
     skills: string[];
 }
 
+
 interface UserState {
     user: User;
     isLoading: boolean;
@@ -22,6 +23,7 @@ interface UserState {
 
 interface UserActions {
     loadUser: (email: string) => Promise<void>;
+    updateUser: (data: User) => Promise<void>; // Update the type here
 }
 
 const fetchUser = async (email: string): Promise<User> => {
@@ -57,7 +59,34 @@ const useUserStore = create<UserState & UserActions>((set) => ({
         }).catch(() => {
             set({ isError: true, isLoading: false });
         });
+    },
+
+    updateUser: async (data: User) => {
+        set({ isError: false, isLoading: true });
+    
+        const token = useAuthStore.getState().token;
+        console.log(useAuthStore.getState().principal?.id);
+        try {
+            const response = await axios.put(`${ENDPOINT}/user/${useAuthStore.getState().principal?.id}`, data, { // Use data directly
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            
+            if (response.status === 200) {
+                set({ isLoading: false , user: response.data});
+                
+            } else {
+                set({ isError: true });
+                throw new Error("Error updating user");
+            }
+        } catch (error) {
+            set({ isError: true });
+            console.error("Error updating user:", error);
+            throw new Error("Error updating user");
+        }
     }
+    
 }));
 
 export default useUserStore;
