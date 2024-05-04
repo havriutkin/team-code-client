@@ -14,6 +14,7 @@ interface UserState {
 interface UserActions {
     loadUser: (email: string) => Promise<void>;
     updateUser: (data: User) => Promise<void>; // Update the type here
+    
 }
 
 const fetchUser = async (email: string): Promise<User> => {

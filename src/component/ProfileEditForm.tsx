@@ -25,13 +25,13 @@ interface ProfileEditFormProps {
 
 function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
     const { register, formState: {errors}, handleSubmit } = useForm<ProfileEditFormInput>();
-    const {user} = useUserStore();
-    const updateUser = useUserStore(state => state.updateUser);
+    const {user, updateUser} = useUserStore();
+    //const updateUser = useUserStore(state => state.updateUser);
 
     const onSubmit: SubmitHandler<ProfileEditFormInput> = async (data, e) => {
         e?.preventDefault();
         const userData: User = {
-            id: 0,
+            id: user.id,
             name: data.username,
             email: data.email,
             experience: data.experience,

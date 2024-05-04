@@ -1,3 +1,5 @@
+ import Skill from "./SkillModel";
+ 
  interface User {
     id: number;
     name: string;
@@ -5,7 +7,7 @@
     experience: string;
     bio: string;
     githubLink: string;
-    skills: string[];
+    skills: Skill[];
 }
 
 export default User;

@@ -16,7 +16,7 @@ import { motion } from "framer-motion";
 function Profile(){
     const location = useLocation();
     const { email, newUserTip } = location.state;
-    const { user, loadUser, isLoading, isError } = useUserStore();
+    const { user, loadUser, isLoading, isError} = useUserStore();
     const [isOwner, setIsOwner] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const { fetchPrincipal } = useAuthStore();
@@ -27,7 +27,7 @@ function Profile(){
                 if (!principal) {
                     return;
                 }
-
+                
                 loadUser(email).then(() => {
                     if(user.id === principal?.id) {
                         setIsOwner(true);
@@ -83,11 +83,17 @@ function Profile(){
                                 <p>{user.experience || "Experience not specified"}</p>
                             </div>
                         </div>
-                        <div>
+                        <div className="my-4">
                             { user.skills && user.skills.length > 0 ?
-                                <ul>
+                                <ul className=" w-full h-full flex flex-wrap justify-stretch items-start gap-4">
                                     {user.skills && user.skills.map((skill, index) => (
-                                        <li key={index}>{skill}</li>
+                                        <li key={index}>{
+                                            <Button
+                                                text={skill.name} // Set the text prop to skill.name
+                                                onClick={() => {}}
+                                                className=" bg-custom-blue w-auto h-full rounded-lg px-8 cursor-default" // Add your button class here
+                                            />}
+                                        </li>
                                     ))}
                                 </ul>
                                 : <p>No skills</p>
