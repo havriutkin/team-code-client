@@ -13,8 +13,7 @@ interface UserState {
 
 interface UserActions {
     loadUser: (email: string) => Promise<void>;
-    updateUser: (data: User) => Promise<void>; // Update the type here
-    
+    updateUser: (data: User) => Promise<void>; 
 }
 
 const fetchUser = async (email: string): Promise<User> => {
@@ -58,7 +57,7 @@ const useUserStore = create<UserState & UserActions>((set) => ({
         const token = useAuthStore.getState().token;
 
         try {
-            const response = await axios.put(`${ENDPOINT}/user/${useAuthStore.getState().principal?.id}`, data, { // Use data directly
+            const response = await axios.put(`${ENDPOINT}/user/${useAuthStore.getState().principal?.id}`, data, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

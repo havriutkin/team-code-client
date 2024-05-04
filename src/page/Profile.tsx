@@ -89,9 +89,9 @@ function Profile(){
                                     {user.skills && user.skills.map((skill, index) => (
                                         <li key={index}>{
                                             <Button
-                                                text={skill.name} // Set the text prop to skill.name
+                                                text={skill.name}
                                                 onClick={() => {}}
-                                                className=" bg-custom-blue w-auto h-full rounded-lg px-8 cursor-default" // Add your button class here
+                                                className=" bg-custom-blue w-auto h-full rounded-lg px-8 cursor-default"
                                             />}
                                         </li>
                                     ))}
