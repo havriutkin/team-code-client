@@ -26,7 +26,6 @@ interface ProfileEditFormProps {
 function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
     const { register, formState: {errors}, handleSubmit } = useForm<ProfileEditFormInput>();
     const {user, updateUser} = useUserStore();
-    //const updateUser = useUserStore(state => state.updateUser);
 
     const onSubmit: SubmitHandler<ProfileEditFormInput> = async (data, e) => {
         e?.preventDefault();
@@ -37,13 +36,12 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
             experience: data.experience,
             bio: data.bio,
             githubLink: data.github,
-            skills: [], // You might not have skills in the form data
+            skills: [],
         };
         console.log(userData.githubLink);
         updateUser(userData).then(() => {
-            onClose(); // Optionally, close the form after successful update
-        }).catch((error : Error) => {
-            // Handle error, show error message, etc.
+            onClose();
+        }).catch((error : Error) => {    
             console.error("Error updating user:", error);
         });
     };
