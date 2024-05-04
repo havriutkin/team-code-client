@@ -91,7 +91,7 @@ function Profile(){
                                             <Button
                                                 text={skill.name}
                                                 onClick={() => {}}
-                                                className=" bg-custom-blue w-auto h-full rounded-lg px-8 cursor-default"
+                                                className=" bg-custom-blue w-auto h-full rounded-lg px-3 cursor-default"
                                             />}
                                         </li>
                                     ))}
