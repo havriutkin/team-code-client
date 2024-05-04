@@ -76,7 +76,7 @@ function Profile(){
                             </div>
                             <div className="w-1/3 flex justify-start items-center gap-2">
                                 <FaGithub className="text-2xl"/>
-                                <p>{user.gitHubLink || "No git hub link"}</p>
+                                <p>{user.githubLink || "No git hub link"}</p>
                             </div>
                             <div className="w-1/3 flex justify-start items-center gap-2">
                                 <SiLevelsdotfyi className="text-2xl"/>

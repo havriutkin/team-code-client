@@ -1,7 +1,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import Button from "./Button";
 import useUserStore from "../store/user";
-import {User} from "../store/user";
+import User from "../model/UserModel";
 
 enum Experience {
     BEGINNER = "BEGINNER",
@@ -25,6 +25,7 @@ interface ProfileEditFormProps {
 
 function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
     const { register, formState: {errors}, handleSubmit } = useForm<ProfileEditFormInput>();
+    const {user} = useUserStore();
     const updateUser = useUserStore(state => state.updateUser);
 
     const onSubmit: SubmitHandler<ProfileEditFormInput> = async (data, e) => {
@@ -35,12 +36,11 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
             email: data.email,
             experience: data.experience,
             bio: data.bio,
-            gitHubLink: data.github,
+            githubLink: data.github,
             skills: [], // You might not have skills in the form data
         };
-        console.log(data);
-        console.log(userData);
-        await updateUser(userData).then(() => {
+        console.log(userData.githubLink);
+        updateUser(userData).then(() => {
             onClose(); // Optionally, close the form after successful update
         }).catch((error : Error) => {
             // Handle error, show error message, etc.
@@ -56,6 +56,7 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
                     <div className="w-full flex justify-start items-center">
                         <label htmlFor="username" className="w-1/4 text-xl">Username:</label>
                         <input className="w-1/2 text-black p-2 rounded-lg" type="text" 
+                            defaultValue={user.name}
                             {...register('username', {required: true})} />
                         {errors.username?.type === 'required' && <span className="text-red-500">Username is required</span>}
                     </div>
@@ -66,6 +67,7 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
                     <div className="w-full flex justify-start items-center">
                         <label htmlFor="email" className="w-1/4 text-xl">Email:</label>
                         <input className="w-1/2 text-black p-2 rounded-lg" type="email" 
+                            defaultValue={user.email}
                             {...register('email', {required: true, pattern: /^\S+@\S+\.\S+$/i})} />
                         {errors.email?.type === 'required' && <span className="text-red-500">Email is required</span>}
                         {errors.email?.type === 'pattern' && <span className="text-red-500">Email is not valid</span>}
@@ -77,6 +79,7 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
                     <div className="w-full flex justify-start items-center">
                         <label htmlFor="github" className="w-1/4 text-xl">GitHub:</label>
                         <input className="w-1/2 text-black p-2 rounded-lg" type="text" 
+                            defaultValue={user.githubLink}
                             {...register('github')} />
                     </div>
                     <hr className="w-full border-1 border-white"/>
@@ -86,6 +89,7 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
                     <div className="w-full flex justify-start items-center">
                         <label htmlFor="experience" className="w-1/4 text-xl">Experience:</label>
                         <select className="w-1/2 text-black p-2 rounded-lg" 
+                            defaultValue={user.experience}
                             {...register('experience', {required: true})}>
                             <option value={Experience.BEGINNER}>Beginner</option>
                             <option value={Experience.INTERMEDIATE}>Intermediate</option>
@@ -100,6 +104,7 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
                     <div className="w-full flex justify-start items-center">
                         <label htmlFor="bio" className="w-1/4 text-xl">Bio:</label>
                         <textarea className="w-1/2 text-black p-2 rounded-lg" 
+                            defaultValue={user.bio}
                             {...register('bio')} />
                     </div>
                     <hr className="w-full border-1 border-white"/>

@@ -5,8 +5,10 @@ import { BsPersonCircle } from "react-icons/bs";
 import TeamCodeLogo from '/TeamCodeLogo.png'
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import useAuthStore from "../store/auth";
 
 function SideBar() {
+  const { principal } = useAuthStore();
   const navigate = useNavigate();
   
   return (
@@ -26,7 +28,7 @@ function SideBar() {
             <CiSearch className="m-5 text-4xl hover:scale-110"/>
         </div>
         <div className="w-full h-1/6 border-t-2 border-white flex justify-center items-center">
-            <BsPersonCircle className="text-6xl" onClick={() => {navigate("/profile")}}/>
+            <BsPersonCircle className="text-6xl" onClick={() => {navigate("/profile", {state: {email: principal?.email}})}}/>
         </div>
     </motion.div>
   );

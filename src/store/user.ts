@@ -1,19 +1,9 @@
 import { create } from "zustand";
 import axios from "axios";
 import useAuthStore from "./auth";
+import User from "../model/UserModel";
 
 const ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
-
-export interface User {
-    id: number;
-    name: string;
-    email: string;
-    experience: string;
-    bio: string;
-    gitHubLink: string;
-    skills: string[];
-}
-
 
 interface UserState {
     user: User;
@@ -65,19 +55,19 @@ const useUserStore = create<UserState & UserActions>((set) => ({
         set({ isError: false, isLoading: true });
     
         const token = useAuthStore.getState().token;
-        console.log(useAuthStore.getState().principal?.id);
+
         try {
             const response = await axios.put(`${ENDPOINT}/user/${useAuthStore.getState().principal?.id}`, data, { // Use data directly
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
-            
             if (response.status === 200) {
+                fetchUser(response.data.email);
                 set({ isLoading: false , user: response.data});
                 
             } else {
-                set({ isError: true });
+                set({ isError: true, isLoading: false});
                 throw new Error("Error updating user");
             }
         } catch (error) {
