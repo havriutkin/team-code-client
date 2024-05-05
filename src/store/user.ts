@@ -63,7 +63,6 @@ const useUserStore = create<UserState & UserActions>((set) => ({
                 }
             });
             if (response.status === 200) {
-                fetchUser(response.data.email);
                 set({ isLoading: false , user: response.data});
                 
             } else {

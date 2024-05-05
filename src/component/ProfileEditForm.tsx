@@ -2,6 +2,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Button from "./Button";
 import useUserStore from "../store/user";
 import User from "../model/UserModel";
+import SkillList from "./SkillList";
 
 enum Experience {
     BEGINNER = "BEGINNER",
@@ -107,6 +108,12 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
                     </div>
                     <hr className="w-full border-1 border-white"/>
                 </div> 
+                <div>
+                    <p className="w-1/4 text-xl">Skills:</p>
+                    <SkillList user={user} className="bg-custom-blue  h-full rounded-lg cursor-default" closeCircle={true} onClickCloseCircle={()=>{alert("delete element")}}/>
+                     <hr className="w-full border-1 border-white"/>
+                </div>
+
             </div>
 
             <div className="w-full flex justify-end items-center gap-5 font-semibold">

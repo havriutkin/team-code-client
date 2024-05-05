@@ -12,6 +12,7 @@ import useAuthStore from "../store/auth";
 import Button from "../component/Button";
 import ProfileEditForm from "../component/ProfileEditPopup";
 import { motion } from "framer-motion";
+import SkillList from "../component/SkillList";
 
 function Profile(){
     const location = useLocation();
@@ -83,22 +84,7 @@ function Profile(){
                                 <p>{user.experience || "Experience not specified"}</p>
                             </div>
                         </div>
-                        <div className="my-4">
-                            { user.skills && user.skills.length > 0 ?
-                                <ul className=" w-full h-full flex flex-wrap justify-stretch items-start gap-4">
-                                    {user.skills && user.skills.map((skill, index) => (
-                                        <li key={index}>{
-                                            <Button
-                                                text={skill.name}
-                                                onClick={() => {}}
-                                                className=" bg-custom-blue w-auto h-full rounded-lg px-3 cursor-default"
-                                            />}
-                                        </li>
-                                    ))}
-                                </ul>
-                                : <p>No skills</p>
-                            }
-                        </div>
+                        <SkillList user={user} className="bg-custom-blue  h-full rounded-lg cursor-default" closeCircle={false} onClickCloseCircle={()=>{alert("delete element")}}/>
                     </div>
                 </div>
                 <div className="w-full flex flex-col justify-between items-start">
