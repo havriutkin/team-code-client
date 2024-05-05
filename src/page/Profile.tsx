@@ -84,10 +84,10 @@ function Profile(){
                                 <p>{user.experience || "Experience not specified"}</p>
                             </div>
                         </div>
-                        <SkillList user={user} className="bg-custom-blue  h-full rounded-lg cursor-default" closeCircle={false} onClickCloseCircle={()=>{alert("delete element")}}/>
+                        <SkillList skills={user.skills} isEdit={false}/>
                     </div>
                 </div>
-                <div className="w-full flex flex-col justify-between items-start">
+                <div className="w-full flex flex-col justify-between items-start gap-5">
                     <div className="w-full min-h-20 flex flex-col items-start gap-2">
                         <h2 className="font-bold text-3xl">About</h2>
                         <p className="w-1/2 text-lg font-light min-h-16">{user.bio || "No bio"}</p>

@@ -39,9 +39,8 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
             githubLink: data.github,
             skills: [],
         };
-        console.log(userData.githubLink);
         updateUser(userData).then(() => {
-            onClose();
+            onSave(data);
         }).catch((error : Error) => {    
             console.error("Error updating user:", error);
         });
@@ -49,9 +48,9 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
 
     return (
         <form className="w-full h-full flex flex-col justify-around items-start font-semibold">
-            <div className="w-full h-3/4 flex flex-col justify-around my-2 gap-5 
+            <div className="w-full max-h-96 flex flex-col justify-around my-2 gap-8 
                             overflow-y-scroll scrollbar-thin ">
-                <div className="w-full min-h-20 p-1 flex flex-col justify-between items-center">
+                <div className="w-full min-h-20 p-1 flex flex-col justify-between items-center pb-5 border-b-2">
                     <div className="w-full flex justify-start items-center">
                         <label htmlFor="username" className="w-1/4 text-xl">Username:</label>
                         <input className="w-1/2 text-black p-2 rounded-lg" type="text" 
@@ -59,10 +58,9 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
                             {...register('username', {required: true})} />
                         {errors.username?.type === 'required' && <span className="text-red-500">Username is required</span>}
                     </div>
-                    <hr className="w-full border-1 border-white"/>
                 </div>
 
-                <div className="w-full min-h-20 p-1 flex flex-col justify-between items-center">
+                <div className="w-full min-h-20 p-1 flex flex-col justify-between items-center pb-5 border-b-2">
                     <div className="w-full flex justify-start items-center">
                         <label htmlFor="email" className="w-1/4 text-xl">Email:</label>
                         <input className="w-1/2 text-black p-2 rounded-lg" type="email" 
@@ -71,20 +69,18 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
                         {errors.email?.type === 'required' && <span className="text-red-500">Email is required</span>}
                         {errors.email?.type === 'pattern' && <span className="text-red-500">Email is not valid</span>}
                     </div>
-                    <hr className="w-full border-1 border-white"/>
                 </div>   
 
-                <div className="w-full min-h-20 p-1 flex flex-col justify-between items-center">
+                <div className="w-full min-h-20 p-1 flex flex-col justify-between items-center pb-5 border-b-2">
                     <div className="w-full flex justify-start items-center">
                         <label htmlFor="github" className="w-1/4 text-xl">GitHub:</label>
                         <input className="w-1/2 text-black p-2 rounded-lg" type="text" 
                             defaultValue={user.githubLink}
                             {...register('github')} />
                     </div>
-                    <hr className="w-full border-1 border-white"/>
                 </div>
 
-                <div className="w-full min-h-20 p-1 flex flex-col justify-between items-center">
+                <div className="w-full min-h-20 p-1 flex flex-col justify-between items-center pb-5 border-b-2">
                     <div className="w-full flex justify-start items-center">
                         <label htmlFor="experience" className="w-1/4 text-xl">Experience:</label>
                         <select className="w-1/2 text-black p-2 rounded-lg" 
@@ -96,22 +92,23 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
                         </select>
                         {errors.experience?.type === 'required' && <span className="text-red-500">Experience is required</span>}
                     </div>
-                    <hr className="w-full border-1 border-white"/>
                 </div>
 
-                <div className="w-full min-h-20 p-1 flex flex-col justify-between items-center">
+                <div className="w-full min-h-20 p-1 flex flex-col justify-between items-center pb-5 border-b-2">
                     <div className="w-full flex justify-start items-center">
                         <label htmlFor="bio" className="w-1/4 text-xl">Bio:</label>
-                        <textarea className="w-1/2 text-black p-2 rounded-lg" 
+                        <textarea className="w-1/2 max-h-14 text-black p-2 rounded-lg" 
                             defaultValue={user.bio}
                             {...register('bio')} />
                     </div>
-                    <hr className="w-full border-1 border-white"/>
                 </div> 
-                <div>
-                    <p className="w-1/4 text-xl">Skills:</p>
-                    <SkillList user={user} className="bg-custom-blue  h-full rounded-lg cursor-default" closeCircle={true} onClickCloseCircle={()=>{alert("delete element")}}/>
-                     <hr className="w-full border-1 border-white"/>
+
+                <div className="w-full min-h-20 p-1 flex flex-col justify-between items-center pb-5 border-b-2">
+                    <div className="w-full flex justify-start items-center">
+                        <p className="w-1/4 text-xl">Skills:</p>
+                        <SkillList className="" skills={user.skills} isEdit={true} 
+                                    onDelete={() => {}} onAdd={() => {}}/>
+                    </div>
                 </div>
 
             </div>

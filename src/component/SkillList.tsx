@@ -1,36 +1,47 @@
-import User from "../model/UserModel";
-import Button from "./Button";
+import Skill from "../model/SkillModel";
 import { IoIosCloseCircleOutline } from "react-icons/io";
+import { IoIosAddCircleOutline } from "react-icons/io";
 
 interface SkillListProps {
-    user: User;
+    skills: Skill[];
     className?: string;
-    closeCircle: boolean;
-    onClickCloseCircle: () => void;
+    isEdit: boolean;
+    onDelete?: (skillId: number) => void;
+    onAdd?: (skillId: number) => void;
 }
 
-function SkillList({ user={} as User, className, closeCircle=false, onClickCloseCircle}: SkillListProps){
-    onClickCloseCircle: () => {"delete skill"}
+function SkillList({ skills, className, isEdit=false, onDelete, onAdd}: SkillListProps){
     return(
-        <div className="my-4">
-            { user.skills && user.skills.length > 0 ?
+        <div className={className}>
+            { skills && skills.length > 0 ?
                 <ul className="w-full h-full flex flex-wrap justify-stretch items-start gap-4">
-                    {user.skills && user.skills.map((skill, index) => (
-                        <li key={index} className="flex relative">{
-                            <div className="relative">
-                                <Button
-                                    text={skill.name}
-                                    onClick={() => {}}
-                                    className={`relative z-10 bg-custom-blue ${closeCircle ? "px-4 pr-5" : "px-4"} ${className}`} // Fix the conditional operator syntax
-                                />
-                                {closeCircle ? 
-                                    <IoIosCloseCircleOutline className="absolute top-0 right-0 w-auto transform translate-x-0 translate-y-1 pl-1 text-red-500 text-1xl z-20 cursor-pointer"
-                                    onClick={onClickCloseCircle }/> // Add absolute and z-20 to the icon
+                    {skills.map((skill, index) => (
+                        <li key={index} className="flex">
+                            <div className="flex gap-2 items-center bg-custom-blue min-w-10 min-h-5 px-3 rounded-xl
+                                            transition-all hover:scale-110">
+                                <p className="">
+                                    {skill.name}
+                                </p>
+                                {isEdit && onDelete ? 
+                                    <IoIosCloseCircleOutline 
+                                        className="h-full text-red-500 text-xl cursor-pointer
+                                                transition-all hover:scale-110 active:scale-95"
+                                        onClick={() => onDelete(skill.id)}/> 
                                     : <></>
                                 }
-                            </div>}
+                            </div>
                         </li>
                     ))}
+                    <li>
+                        {isEdit && onAdd ?
+                            <div className="h-full flex justify-center items-center min-w-10 px-3 rounded-xl">
+                                <IoIosAddCircleOutline 
+                                    className="text-green-500 text-2xl cursor-pointer
+                                            transition-all hover:scale-110 active:scale-95"/>
+                            </div>
+                            : <></>
+                        }
+                    </li>
                 </ul>
                 : <p>No skills</p>
             }
