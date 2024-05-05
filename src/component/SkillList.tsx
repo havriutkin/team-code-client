@@ -1,6 +1,8 @@
 import Skill from "../model/SkillModel";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { IoIosAddCircleOutline } from "react-icons/io";
+import SkillForm from "./SkillForm";
+import { useState } from "react";
 
 interface SkillListProps {
     skills: Skill[];
@@ -11,6 +13,12 @@ interface SkillListProps {
 }
 
 function SkillList({ skills, className, isEdit=false, onDelete, onAdd}: SkillListProps){
+    const [isAdding, setIsAdding] = useState(false);
+
+    const handleAddButtonClick = () => {
+        setIsAdding(prev => !prev);
+    }
+
     return(
         <div className={className}>
             { skills && skills.length > 0 ?
@@ -37,11 +45,17 @@ function SkillList({ skills, className, isEdit=false, onDelete, onAdd}: SkillLis
                             <div className="h-full flex justify-center items-center min-w-10 px-3 rounded-xl">
                                 <IoIosAddCircleOutline 
                                     className="text-green-500 text-2xl cursor-pointer
-                                            transition-all hover:scale-110 active:scale-95"/>
+                                            transition-all hover:scale-110 active:scale-95"
+                                    onClick={handleAddButtonClick}/>
                             </div>
                             : <></>
                         }
-                    </li>
+                        {isAdding ? 
+                            <SkillForm className="static  w-96" 
+                                onCancel={() => setIsAdding(false)}/> 
+                            : <></>
+                        }
+                    </li> 
                 </ul>
                 : <p>No skills</p>
             }

@@ -51,7 +51,7 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
             <div className="w-full max-h-96 flex flex-col justify-around my-2 gap-8 
                             overflow-y-scroll scrollbar-thin ">
                 <div className="w-full min-h-20 p-1 flex flex-col justify-between items-center pb-5 border-b-2">
-                    <div className="w-full flex justify-start items-center">
+                    <div className="w-full flex justify-start items-start">
                         <label htmlFor="username" className="w-1/4 text-xl">Username:</label>
                         <input className="w-1/2 text-black p-2 rounded-lg" type="text" 
                             defaultValue={user.name}
@@ -61,7 +61,7 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
                 </div>
 
                 <div className="w-full min-h-20 p-1 flex flex-col justify-between items-center pb-5 border-b-2">
-                    <div className="w-full flex justify-start items-center">
+                    <div className="w-full flex justify-start items-start">
                         <label htmlFor="email" className="w-1/4 text-xl">Email:</label>
                         <input className="w-1/2 text-black p-2 rounded-lg" type="email" 
                             defaultValue={user.email}
@@ -72,7 +72,7 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
                 </div>   
 
                 <div className="w-full min-h-20 p-1 flex flex-col justify-between items-center pb-5 border-b-2">
-                    <div className="w-full flex justify-start items-center">
+                    <div className="w-full flex justify-start items-start">
                         <label htmlFor="github" className="w-1/4 text-xl">GitHub:</label>
                         <input className="w-1/2 text-black p-2 rounded-lg" type="text" 
                             defaultValue={user.githubLink}
@@ -81,7 +81,7 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
                 </div>
 
                 <div className="w-full min-h-20 p-1 flex flex-col justify-between items-center pb-5 border-b-2">
-                    <div className="w-full flex justify-start items-center">
+                    <div className="w-full flex justify-start items-start">
                         <label htmlFor="experience" className="w-1/4 text-xl">Experience:</label>
                         <select className="w-1/2 text-black p-2 rounded-lg" 
                             defaultValue={user.experience}
@@ -95,7 +95,7 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
                 </div>
 
                 <div className="w-full min-h-20 p-1 flex flex-col justify-between items-center pb-5 border-b-2">
-                    <div className="w-full flex justify-start items-center">
+                    <div className="w-full flex justify-start items-start">
                         <label htmlFor="bio" className="w-1/4 text-xl">Bio:</label>
                         <textarea className="w-1/2 max-h-14 text-black p-2 rounded-lg" 
                             defaultValue={user.bio}
@@ -104,7 +104,7 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
                 </div> 
 
                 <div className="w-full min-h-20 p-1 flex flex-col justify-between items-center pb-5 border-b-2">
-                    <div className="w-full flex justify-start items-center">
+                    <div className="w-full flex justify-start items-start">
                         <p className="w-1/4 text-xl">Skills:</p>
                         <SkillList className="" skills={user.skills} isEdit={true} 
                                     onDelete={() => {}} onAdd={() => {}}/>
