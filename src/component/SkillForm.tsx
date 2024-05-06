@@ -46,7 +46,7 @@ function SkillForm({ className, excludedSkills, onCancel, onConfirm }: SkillForm
             </div>
 
             <div className="">
-                <ul className="max-h-40 overflow-y-scroll flex flex-wrap justify-stretch gap-3 p-3">
+                <ul className="max-h-40 overflow-y-scroll scrollbar-thin flex flex-wrap justify-stretch gap-3 p-3">
                     {selectedSkills && selectedSkills.map((skill, index) => {
                         return (
                             <li key={index} className="flex">

@@ -73,7 +73,7 @@ function SkillList({ skills, className, isEdit=false, onDelete, onAdd}: SkillLis
                             : <></>
                         }
                         {isAdding ? 
-                            <SkillForm className="static w-96" excludedSkills={skills}
+                            <SkillForm className="static w-80" excludedSkills={skills}
                                 onCancel={() => setIsAdding(false)}
                                 onConfirm={handleAddSkills}/> 
                             : <></>
