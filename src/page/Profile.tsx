@@ -12,11 +12,12 @@ import useAuthStore from "../store/auth";
 import Button from "../component/Button";
 import ProfileEditForm from "../component/ProfileEditPopup";
 import { motion } from "framer-motion";
+import SkillList from "../component/SkillList";
 
 function Profile(){
     const location = useLocation();
     const { email, newUserTip } = location.state;
-    const { user, loadUser, isLoading, isError } = useUserStore();
+    const { user, loadUser, isLoading, isError} = useUserStore();
     const [isOwner, setIsOwner] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const { fetchPrincipal } = useAuthStore();
@@ -27,7 +28,7 @@ function Profile(){
                 if (!principal) {
                     return;
                 }
-
+                
                 loadUser(email).then(() => {
                     if(user.id === principal?.id) {
                         setIsOwner(true);
@@ -38,6 +39,10 @@ function Profile(){
             });
         }
     }, [email, loadUser, fetchPrincipal, user.id]);
+
+    const onEditFormSave = () => {
+        setIsEditing(false);
+    }
 
     if (isLoading) {
         return <LoadingPage/>;
@@ -62,7 +67,7 @@ function Profile(){
                         <BsPersonCircle className="text-6xl"/>
                     </div>
                     <div className="w-5/6 h-full flex flex-col justify-between">
-                        <div className=" w-1/2 flex justify-between items-center">
+                        <div className="min-w-1/2 max-w-3/4 flex justify-stretch gap-10 items-center">
                             <h1 className="font-extrabold text-6xl">{user.name}</h1>
                             {isOwner && <Button text="Edit" 
                                             className="w-24 h-3/4 rounded-lg text-2xl bg-custom-blue transition-all 
@@ -76,26 +81,17 @@ function Profile(){
                             </div>
                             <div className="w-1/3 flex justify-start items-center gap-2">
                                 <FaGithub className="text-2xl"/>
-                                <p>{user.gitHubLink || "No git hub link"}</p>
+                                <p>{user.githubLink || "No git hub link"}</p>
                             </div>
                             <div className="w-1/3 flex justify-start items-center gap-2">
                                 <SiLevelsdotfyi className="text-2xl"/>
                                 <p>{user.experience || "Experience not specified"}</p>
                             </div>
                         </div>
-                        <div>
-                            { user.skills && user.skills.length > 0 ?
-                                <ul>
-                                    {user.skills && user.skills.map((skill, index) => (
-                                        <li key={index}>{skill}</li>
-                                    ))}
-                                </ul>
-                                : <p>No skills</p>
-                            }
-                        </div>
+                        <SkillList skills={user.skills} isEdit={false}/>
                     </div>
                 </div>
-                <div className="w-full flex flex-col justify-between items-start">
+                <div className="w-full flex flex-col justify-between items-start gap-5">
                     <div className="w-full min-h-20 flex flex-col items-start gap-2">
                         <h2 className="font-bold text-3xl">About</h2>
                         <p className="w-1/2 text-lg font-light min-h-16">{user.bio || "No bio"}</p>
@@ -108,7 +104,7 @@ function Profile(){
                     </div>
                 </div>
                 {newUserTip && <p>Welcome to TeamCode! We're excited to have you on board.</p>}
-                {isEditing && <ProfileEditForm onClose={() => setIsEditing(false)}/>}
+                {isEditing && <ProfileEditForm onClose={() => setIsEditing(false)} onSave={onEditFormSave}/>}
             </motion.div>
         </div>
     );

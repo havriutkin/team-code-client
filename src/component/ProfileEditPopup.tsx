@@ -1,14 +1,54 @@
 import ProfileEditForm from "./ProfileEditForm";
 import { motion, AnimatePresence } from "framer-motion";
+import useUserStore from "../store/user";
+import User from "../model/UserModel";
+
+enum Experience {
+    BEGINNER = "BEGINNER",
+    INTERMEDIATE = "INTERMEDIATE",
+    ADVANCE = "ADVANCE"
+}
+
+type ProfileEditFormInput = {
+    username: string;
+    email: string;
+    github: string;
+    experience: Experience;
+    bio: string;
+    // skills: string[];
+}
+
 
 interface ProfileEditPopupProps {
+    onSave: () => void;
     onClose: () => void;
 }
 
-function ProfileEditPopup({ onClose }: ProfileEditPopupProps) {
+function ProfileEditPopup({ onClose, onSave }: ProfileEditPopupProps) {
+    const {user, updateUser, addSkills, removeSkills} = useUserStore();
 
-    const handleSave = () => {
-        onClose();
+    const handleSave = async (data: ProfileEditFormInput, skillsToAdd: number[], skillsToDelete: number[]) => {
+        const userData: User = {
+            id: user.id,
+            name: data.username,
+            email: data.email,
+            experience: data.experience,
+            bio: data.bio,
+            githubLink: data.github,
+            skills: [],
+        };
+
+        await updateUser(userData);
+
+        if (skillsToAdd.length !== 0) {
+            await addSkills(skillsToAdd);
+        }
+
+        if (skillsToDelete.length !== 0) {
+            await removeSkills(skillsToDelete);
+        }
+
+        onSave();
     }
 
     return (
