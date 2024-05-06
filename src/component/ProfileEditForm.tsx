@@ -53,8 +53,9 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
                         <label htmlFor="username" className="w-1/4 text-xl">Username:</label>
                         <input className="w-1/2 text-black p-2 rounded-lg" type="text" 
                             defaultValue={user.name}
-                            {...register('username', {required: true})} />
+                            {...register('username', {required: true, maxLength: 20})} />
                         {errors.username?.type === 'required' && <span className="text-red-500">Username is required</span>}
+                        {errors.username?.type === 'maxLength' && <span className="text-red-500">Username is too long</span>}
                     </div>
                 </div>
 

@@ -67,7 +67,7 @@ function Profile(){
                         <BsPersonCircle className="text-6xl"/>
                     </div>
                     <div className="w-5/6 h-full flex flex-col justify-between">
-                        <div className=" w-1/2 flex justify-between items-center">
+                        <div className="min-w-1/2 max-w-3/4 flex justify-stretch gap-10 items-center">
                             <h1 className="font-extrabold text-6xl">{user.name}</h1>
                             {isOwner && <Button text="Edit" 
                                             className="w-24 h-3/4 rounded-lg text-2xl bg-custom-blue transition-all 
