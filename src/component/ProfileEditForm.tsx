@@ -1,8 +1,9 @@
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useState } from "react";
 import Button from "./Button";
 import useUserStore from "../store/user";
-import User from "../model/UserModel";
 import SkillList from "./SkillList";
+import Skill from "../model/SkillModel";
 
 enum Experience {
     BEGINNER = "BEGINNER",
@@ -16,34 +17,31 @@ type ProfileEditFormInput = {
     github: string;
     experience: Experience;
     bio: string;
-    // skills: string[];
 }
 
 interface ProfileEditFormProps {
     onClose: () => void;
-    onSave: (data: ProfileEditFormInput) => void;
+    onSave: (data: ProfileEditFormInput, skillsToAdd: number[], skillsToDelete: number[]) => Promise<void>;
 }
 
 function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
     const { register, formState: {errors}, handleSubmit } = useForm<ProfileEditFormInput>();
-    const {user, updateUser} = useUserStore();
+    const { user } = useUserStore();
+    const [skillsToDelete, setSkillsToDelete] = useState<number[]>([]);
+    const [skillsToAdd, setSkillsToAdd] = useState<Skill[]>([]);
 
     const onSubmit: SubmitHandler<ProfileEditFormInput> = async (data, e) => {
         e?.preventDefault();
-        const userData: User = {
-            id: user.id,
-            name: data.username,
-            email: data.email,
-            experience: data.experience,
-            bio: data.bio,
-            githubLink: data.github,
-            skills: [],
-        };
-        updateUser(userData).then(() => {
-            onSave(data);
-        }).catch((error : Error) => {    
-            console.error("Error updating user:", error);
-        });
+        const toAddIds = skillsToAdd.map(skill => skill.id);
+        onSave(data, toAddIds, skillsToDelete);
+    };
+
+    const onDeleteSkill = (skillId: number) => {
+        setSkillsToDelete((prev: number[]) => [...prev, skillId]);
+    };
+
+    const onAddSkill = (skills: Skill[]) => {
+        setSkillsToAdd((prev: Skill[]) => [...prev, ...skills]);
     };
 
     return (
@@ -106,8 +104,8 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
                 <div className="w-full min-h-20 p-1 flex flex-col justify-between items-center pb-5 border-b-2">
                     <div className="w-full flex justify-start items-start">
                         <p className="w-1/4 text-xl">Skills:</p>
-                        <SkillList className="" skills={user.skills} isEdit={true} 
-                                    onDelete={() => {}} onAdd={() => {}}/>
+                        <SkillList className="" skills={[...user.skills, ...skillsToAdd]} isEdit={true} 
+                                    onDelete={onDeleteSkill} onAdd={onAddSkill}/>
                     </div>
                 </div>
 

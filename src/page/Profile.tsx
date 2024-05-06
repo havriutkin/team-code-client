@@ -40,6 +40,10 @@ function Profile(){
         }
     }, [email, loadUser, fetchPrincipal, user.id]);
 
+    const onEditFormSave = () => {
+        setIsEditing(false);
+    }
+
     if (isLoading) {
         return <LoadingPage/>;
     }
@@ -100,7 +104,7 @@ function Profile(){
                     </div>
                 </div>
                 {newUserTip && <p>Welcome to TeamCode! We're excited to have you on board.</p>}
-                {isEditing && <ProfileEditForm onClose={() => setIsEditing(false)}/>}
+                {isEditing && <ProfileEditForm onClose={() => setIsEditing(false)} onSave={onEditFormSave}/>}
             </motion.div>
         </div>
     );
