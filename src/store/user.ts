@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import useAuthStore from "./auth";
 import User from "../model/UserModel";
 
@@ -47,9 +47,7 @@ const updateUser = async (data: User, token: string): Promise<User> => {
 };
 
 const postSkills = async (userId: number, skillIds: number[], token: string): Promise<void> => {
-    const response = await axios.post(`${ENDPOINT}/user/${userId}/skills`, {
-        skillIds
-    }, {
+    const response = await axios.post(`${ENDPOINT}/user/${userId}/skills`, skillIds, {
         headers: {
             Authorization: `Bearer ${token}`
         }
@@ -63,13 +61,21 @@ const postSkills = async (userId: number, skillIds: number[], token: string): Pr
 };
 
 const deleteSkills = async (userId: number, skillIds: number[], token: string): Promise<void> => {
-    const response = await axios.delete(`${ENDPOINT}/user/${userId}/skills}`, {
+
+    const requestConfig: AxiosRequestConfig = {
         headers: {
             Authorization: `Bearer ${token}`
         },
-        data: {
-            skillIds
-        }
+        data: skillIds
+    };
+
+    console.log("Request config:", requestConfig);
+
+    const response = await axios.delete(`${ENDPOINT}/user/${userId}/skills`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
+        data: skillIds
     });
 
     if (response.status !== 200) {
@@ -145,6 +151,7 @@ const useUserStore = create<UserState & UserActions>((set) => ({
         }
 
         try {
+            console.log("Removing skills:", skillIds);
             deleteSkills(userId, skillIds, token);
         } catch (error) {
             set({ isError: true, isLoading: false });

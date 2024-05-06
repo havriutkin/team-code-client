@@ -39,8 +39,14 @@ function ProfileEditPopup({ onClose, onSave }: ProfileEditPopupProps) {
         };
 
         await updateUser(userData);
-        await addSkills(skillsToAdd);
-        await removeSkills(skillsToDelete);
+
+        if (skillsToAdd.length !== 0) {
+            await addSkills(skillsToAdd);
+        }
+
+        if (skillsToDelete.length !== 0) {
+            await removeSkills(skillsToDelete);
+        }
 
         onSave();
     }
