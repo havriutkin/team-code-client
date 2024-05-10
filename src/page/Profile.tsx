@@ -58,7 +58,7 @@ function Profile(){
     }
 
     return (
-        <div className="w-screen h-screen bg-dark-bg font-sans text-white flex justify-center">
+        <div className="w-screen h-screen bg-dark-bg font-sans text-white flex justify-center overflow-y-scroll">
             <div className="w-1/12">
                 <SideBar/>
             </div>
@@ -67,7 +67,7 @@ function Profile(){
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
                 className="w-3/4 p-5 flex flex-col items-start gap-10">
-                <div className="w-full h-1/5 flex justify-end items-center">
+                <div className="w-full h-1/5 flex justify-end items-center ">
                     <div className="w-1/6 h-full flex justify-start items-center">
                         <BsPersonCircle className="text-6xl"/>
                     </div>
@@ -104,7 +104,7 @@ function Profile(){
                     <div className="w-full h-full min-h-20 flex flex-col items-start gap-2">
                         <h2 className="font-bold text-3xl">Recent Projects</h2>
                         <div>
-                            <ProjectList projects={projects} className=" flex w-full h-80 overflow-y-scroll"/>
+                            <ProjectList projects={projects} className=" flex w-full"/>
                         </div>
                     </div>
                 </div>
