@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import LandingPage from './page/LandingPage'
 import AuthPage from './page/AuthPage'
 import Profile from './page/Profile'
+import Project from './model/Project'
 
 function App() {
  

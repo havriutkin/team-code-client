@@ -11,16 +11,19 @@ import ErrorPage from "./ErrorPage";
 import useAuthStore from "../store/auth";
 import Button from "../component/Button";
 import ProfileEditForm from "../component/ProfileEditPopup";
-import { motion } from "framer-motion";
-import SkillList from "../component/SkillList";
+import { motion, useResetProjection } from "framer-motion";
+import SkillList from "../component/SkillList"; 
+import ProjectList from "../component/ProjectList";
+import useProjectStore from "../store/project";
 
 function Profile(){
     const location = useLocation();
     const { email, newUserTip } = location.state;
     const { user, loadUser, isLoading, isError} = useUserStore();
     const [isOwner, setIsOwner] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
+    const [ isEditing, setIsEditing ] = useState(false);
     const { fetchPrincipal } = useAuthStore();
+    const { projects, loadProjectsByUserId } = useProjectStore();
 
     useEffect(() => {
         if (email) {
@@ -35,7 +38,9 @@ function Profile(){
                     } else {
                         setIsOwner(false)
                     }
+                    loadProjectsByUserId(user.id);
                 });
+                
             });
         }
     }, [email, loadUser, fetchPrincipal, user.id]);
@@ -74,7 +79,7 @@ function Profile(){
                                                         hover:scale-105 active:scale-95" 
                                             onClick={() => setIsEditing(true)}/>}
                         </div>
-                        <div className="w-full flex justify-between">
+                        <div className="w-full flex justify-between my-2">
                             <div className="w-1/3 flex justify-start items-center gap-2">
                                 <MdEmail className="text-2xl"/>
                                 <p>{user.email}</p>
@@ -91,15 +96,15 @@ function Profile(){
                         <SkillList skills={user.skills} isEdit={false}/>
                     </div>
                 </div>
-                <div className="w-full flex flex-col justify-between items-start gap-5">
+                <div className="w-full h-full flex flex-col justify-between items-start gap-5">
                     <div className="w-full min-h-20 flex flex-col items-start gap-2">
                         <h2 className="font-bold text-3xl">About</h2>
                         <p className="w-1/2 text-lg font-light min-h-16">{user.bio || "No bio"}</p>
                     </div>
-                    <div className="w-full min-h-20 flex flex-col items-start gap-2">
+                    <div className="w-full h-full min-h-20 flex flex-col items-start gap-2">
                         <h2 className="font-bold text-3xl">Recent Projects</h2>
                         <div>
-                            <p className="font-light text-lg">No projects</p>
+                            <ProjectList projects={projects} className=" flex w-full h-80 overflow-y-scroll"/>
                         </div>
                     </div>
                 </div>
