@@ -16,6 +16,8 @@ import SkillList from "../component/SkillList";
 import ProjectList from "../component/ProjectList";
 import useProjectStore from "../store/project";
 
+// TODO: Add LogOut Button
+
 function Profile(){
     const location = useLocation();
     const { email, newUserTip } = location.state;

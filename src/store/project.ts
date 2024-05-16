@@ -86,6 +86,10 @@ const useProjectStore = create<ProjectState & ProjectActions>((set) => ({
         }
     }
 
+    // Todo: loadProjectsByOwnerId
+
+    // Todo: loadProjectsByFilter
+
     // updateProject: async (data: Project) => {
     //     set({ isError: false, isLoading: true });
     
