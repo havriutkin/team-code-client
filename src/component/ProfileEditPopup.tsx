@@ -35,7 +35,7 @@ function ProfileEditPopup({ onClose, onSave }: ProfileEditPopupProps) {
             experience: data.experience,
             bio: data.bio,
             githubLink: data.github,
-            skills: [],
+            skills: []
         };
 
         await updateUser(userData);

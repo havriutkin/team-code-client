@@ -37,7 +37,7 @@ function SkillList({ skills, className, isEdit=false, onDelete, onAdd}: SkillLis
     return(
         <div className={className}>
             { skills && skills.length > 0 ?
-                <ul className="w-full h-full flex flex-wrap justify-stretch items-start gap-4">
+                <ul className={`w-full h-full flex items-start gap-4`}>
                     {skills.map((skill, index) => {
                         if (skillsToDelete.includes(skill.id)) {
                             return;

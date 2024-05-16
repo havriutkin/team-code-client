@@ -2,6 +2,7 @@ import { create } from "zustand";
 import axios, { AxiosRequestConfig } from "axios";
 import useAuthStore from "./auth";
 import User from "../model/UserModel";
+import Project from "../model/Project";
 
 const ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
@@ -85,6 +86,7 @@ const deleteSkills = async (userId: number, skillIds: number[], token: string): 
     return;
 }
 
+
 const useUserStore = create<UserState & UserActions>((set) => ({
     user: {} as User,
     isLoading: false,
@@ -97,7 +99,7 @@ const useUserStore = create<UserState & UserActions>((set) => ({
             set({ isError: true, isLoading: false});
             return;
         }
-
+        
         fetchUser(email).then((user) => {
             set({ user, isLoading: false });
         }).catch(() => {

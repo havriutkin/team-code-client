@@ -12,15 +12,20 @@ import useAuthStore from "../store/auth";
 import Button from "../component/Button";
 import ProfileEditForm from "../component/ProfileEditPopup";
 import { motion } from "framer-motion";
-import SkillList from "../component/SkillList";
+import SkillList from "../component/SkillList"; 
+import ProjectList from "../component/ProjectList";
+import useProjectStore from "../store/project";
+
+// TODO: Add LogOut Button
 
 function Profile(){
     const location = useLocation();
     const { email, newUserTip } = location.state;
     const { user, loadUser, isLoading, isError} = useUserStore();
     const [isOwner, setIsOwner] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
+    const [ isEditing, setIsEditing ] = useState(false);
     const { fetchPrincipal } = useAuthStore();
+    const { projects, loadProjectsByUserId } = useProjectStore();
 
     useEffect(() => {
         if (email) {
@@ -35,10 +40,12 @@ function Profile(){
                     } else {
                         setIsOwner(false)
                     }
+                    loadProjectsByUserId(user.id);
                 });
+                
             });
         }
-    }, [email, loadUser, fetchPrincipal, user.id]);
+    }, [email, loadUser, fetchPrincipal, user.id, loadProjectsByUserId]);
 
     const onEditFormSave = () => {
         setIsEditing(false);
@@ -53,7 +60,7 @@ function Profile(){
     }
 
     return (
-        <div className="w-screen h-screen bg-dark-bg font-sans text-white flex justify-center">
+        <div className="w-screen h-screen overflow-y-scroll scrollbar-thin  bg-dark-bg font-sans text-white flex justify-center">
             <div className="w-1/12">
                 <SideBar/>
             </div>
@@ -61,20 +68,21 @@ function Profile(){
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                className="w-3/4 p-5 flex flex-col items-start gap-10">
-                <div className="w-full h-1/5 flex justify-end items-center">
-                    <div className="w-1/6 h-full flex justify-start items-center">
+                className="w-3/4 h-full p-5 flex flex-col items-start gap-10">
+                <div className="w-full flex justify-between items-center">
+                    <div className="w-1/6 flex justify-start items-center">
                         <BsPersonCircle className="text-6xl"/>
                     </div>
-                    <div className="w-5/6 h-full flex flex-col justify-between">
-                        <div className="min-w-1/2 max-w-3/4 flex justify-stretch gap-10 items-center">
+
+                    <div className="w-5/6 h-full flex flex-col justify-between items-start gap-3">
+                        <div className="flex justify-stretch gap-10 items-center">
                             <h1 className="font-extrabold text-6xl">{user.name}</h1>
                             {isOwner && <Button text="Edit" 
                                             className="w-24 h-3/4 rounded-lg text-2xl bg-custom-blue transition-all 
                                                         hover:scale-105 active:scale-95" 
                                             onClick={() => setIsEditing(true)}/>}
                         </div>
-                        <div className="w-full flex justify-between">
+                        <div className="w-full flex justify-between my-2">
                             <div className="w-1/3 flex justify-start items-center gap-2">
                                 <MdEmail className="text-2xl"/>
                                 <p>{user.email}</p>
@@ -91,15 +99,16 @@ function Profile(){
                         <SkillList skills={user.skills} isEdit={false}/>
                     </div>
                 </div>
-                <div className="w-full flex flex-col justify-between items-start gap-5">
-                    <div className="w-full min-h-20 flex flex-col items-start gap-2">
+
+                <div className="w-full h-auto flex flex-col justify-between items-start gap-5">
+                    <div className="w-full min-h-20 h-auto flex flex-col gap-2">
                         <h2 className="font-bold text-3xl">About</h2>
-                        <p className="w-1/2 text-lg font-light min-h-16">{user.bio || "No bio"}</p>
+                        <p className=" w-5/6 text-lg font-light min-h-16 h-auto">{user.bio || "No bio"}</p>
                     </div>
-                    <div className="w-full min-h-20 flex flex-col items-start gap-2">
-                        <h2 className="font-bold text-3xl">Recent Projects</h2>
+                    <div className="w-full h-auto min-h-20 flex flex-col">
+                        <h2 className="font-bold text-3xl mb-5">Recent Projects</h2>
                         <div>
-                            <p className="font-light text-lg">No projects</p>
+                            <ProjectList projects={projects} className="flex h-auto mb-5"/>
                         </div>
                     </div>
                 </div>
