@@ -37,7 +37,7 @@ function SkillList({ skills, className, isEdit=false, onDelete, onAdd}: SkillLis
     return(
         <div className={className}>
             { skills && skills.length > 0 ?
-                <ul className={`w-full h-full flex items-start gap-4`}>
+                <ul className={`w-full h-full flex flex-wrap items-start gap-4`}>
                     {skills.map((skill, index) => {
                         if (skillsToDelete.includes(skill.id)) {
                             return;
@@ -45,10 +45,10 @@ function SkillList({ skills, className, isEdit=false, onDelete, onAdd}: SkillLis
 
                         return (
                             <li key={index} className="flex">
-                                <div className="flex gap-2 items-center bg-custom-blue min-w-10 min-h-5 
+                                <div className="flex gap-2 items-center bg-custom-blue  min-h-5 w-fit
                                                 px-3 rounded-xl
                                                 transition-all hover:scale-110">
-                                    <p className="">
+                                    <p className="w-fit">
                                         {skill.name}
                                     </p>
                                     {isEdit && onDelete ? 

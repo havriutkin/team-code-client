@@ -60,7 +60,7 @@ function Profile(){
     }
 
     return (
-        <div className="w-screen h-screen overflow-y-scroll scrollbar-thin  bg-dark-bg font-sans text-white flex justify-center">
+        <div className="w-screen h-screen overflow-y-scroll scrollbar-thin scrollbar-track-custom-blue bg-dark-bg font-sans text-white flex justify-center">
             <div className="w-1/12">
                 <SideBar/>
             </div>
