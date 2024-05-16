@@ -4,7 +4,7 @@ import User from "./UserModel";
 interface Project {
     id: number;
     name: string;
-    description: boolean;
+    description: string;
     status: boolean;
     participantsNumber: number;
     maxParticipantsNumber: number;
