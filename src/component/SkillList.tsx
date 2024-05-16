@@ -7,12 +7,13 @@ import { useState } from "react";
 interface SkillListProps {
     skills: Skill[];
     className?: string;
+    elementsPosition?: string;
     isEdit: boolean;
     onDelete?: (skillId: number) => void;
     onAdd?: (skills: Skill[]) => void;
 }
 
-function SkillList({ skills, className, isEdit=false, onDelete, onAdd}: SkillListProps){
+function SkillList({ skills, className, elementsPosition, isEdit=false, onDelete, onAdd}: SkillListProps){
     const [skillsToDelete, setSkillsToDelete] = useState<number[]>([]);
     const [isAdding, setIsAdding] = useState(false);
 
@@ -37,7 +38,7 @@ function SkillList({ skills, className, isEdit=false, onDelete, onAdd}: SkillLis
     return(
         <div className={className}>
             { skills && skills.length > 0 ?
-                <ul className="w-full h-full flex flex-wrap justify-stretch items-start gap-4">
+                <ul className={`w-full h-full flex items-start gap-4 ${elementsPosition}`}>
                     {skills.map((skill, index) => {
                         if (skillsToDelete.includes(skill.id)) {
                             return;

@@ -58,7 +58,7 @@ function Profile(){
     }
 
     return (
-        <div className="w-screen h-screen bg-dark-bg font-sans text-white flex justify-center overflow-y-scroll">
+        <div className="w-full h-full bg-dark-bg font-sans text-white flex justify-center">
             <div className="w-1/12">
                 <SideBar/>
             </div>
@@ -93,18 +93,18 @@ function Profile(){
                                 <p>{user.experience || "Experience not specified"}</p>
                             </div>
                         </div>
-                        <SkillList skills={user.skills} isEdit={false}/>
+                        <SkillList skills={user.skills} isEdit={false} elementsPosition="flex-wrap justify-stretch"/>
                     </div>
                 </div>
-                <div className="w-full h-full flex flex-col justify-between items-start gap-5">
-                    <div className="w-full min-h-20 flex flex-col items-start gap-2">
+                <div className="w-full h-auto flex flex-col justify-between items-start gap-5">
+                    <div className="w-full min-h-20 h-auto flex flex-col">
                         <h2 className="font-bold text-3xl">About</h2>
-                        <p className="w-1/2 text-lg font-light min-h-16">{user.bio || "No bio"}</p>
+                        <p className=" w-5/6 text-lg font-light min-h-16 h-auto">{user.bio || "No bio"}</p>
                     </div>
-                    <div className="w-full h-full min-h-20 flex flex-col items-start gap-2">
+                    <div className="w-full h-auto min-h-20 flex flex-col">
                         <h2 className="font-bold text-3xl">Recent Projects</h2>
                         <div>
-                            <ProjectList projects={projects} className=" flex w-full"/>
+                            <ProjectList projects={projects} className=" flex w-5/6 h-auto min-h-40"/>
                         </div>
                     </div>
                 </div>

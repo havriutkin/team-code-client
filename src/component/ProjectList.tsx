@@ -13,8 +13,8 @@ function ProjectList({ projects, className}: ProjectListProps ) {
                 <ul className="w-full h-full flex flex-col gap-4 ">
                     {projects.map((project, index) => {
                         return (
-                            <li key={index} className="flex w-full h-full">
-                                <ProjectView project={project} className="border-2 border-custom-light-gray w-full h-36 rounded-lg shadow-md shadow-custom-light-gray pl-2"/>
+                            <li key={index} className="flex flex-col w-auto h-full">
+                                <ProjectView project={project} className="border-2 border-custom-light-gray w-full h-48 rounded-lg shadow-md shadow-custom-light-gray pl-2"/>
                             </li>
                         );
                     })}
