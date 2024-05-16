@@ -43,7 +43,7 @@ function Profile(){
                 
             });
         }
-    }, [email, loadUser, fetchPrincipal, user.id]);
+    }, [email, loadUser, fetchPrincipal, user.id, loadProjectsByUserId]);
 
     const onEditFormSave = () => {
         setIsEditing(false);
