@@ -2,7 +2,7 @@ import { create } from "zustand";
 import axios, { AxiosRequestConfig } from "axios";
 import useAuthStore from "./auth";
 import User from "../model/UserModel";
-import Project from "../model/Project";
+
 
 const ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 

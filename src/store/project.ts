@@ -2,6 +2,7 @@ import { create } from "zustand";
 import Project from "../model/Project";
 import useAuthStore from "./auth";
 import axios from "axios";
+import ProjectFilter from "../model/ProjectFilter";
 
 const ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
@@ -14,6 +15,8 @@ interface ProjectState{
 interface ProjectActions {
     loadProject: (id: number) => Promise<void>;
     loadProjectsByUserId: (userId: number) => Promise<Project[]>
+    loadProjectsByOwnerId: (ownerOd: number) => Promise<Project[]>
+    loadProjectsByFilter: (projectFilter: ProjectFilter) => Promise<Project[]>
     //updateProjec: (data: Project) => Promise<void>; 
     //addSkills: (skillIds: number[]) => Promise<void>;
     //removeSkills: (skillIds: number[]) => Promise<void>;
@@ -54,18 +57,23 @@ const useProjectStore = create<ProjectState & ProjectActions>((set) => ({
     isError: false,
 
     loadProject: async (id: number) => {
-        // set({ isError: false, isLoading: true });
+        set({ isError: false, isLoading: true })
+        
+        if (!id) {
+            set({ isError: true, isLoading: false});
+            return;
+        }
 
-        // if (!id) {
-        //     set({ isError: true, isLoading: false});
-        //     return;
-        // }
 
-        // fetchProject(id).then((project) => {
-        //     set({ projects, isLoading: false });
-        // }).catch(() => {
-        //     set({ isError: true, isLoading: false });
-        // });
+        fetchProject(id).then((data) => {
+            set({
+                projects: [data],
+                isLoading: false,
+                isError: false,
+            });
+        }).catch(() => {
+            set({ isError: true, isLoading: false });
+        });
     },
 
     loadProjectsByUserId: async (userId: number) => {
@@ -76,8 +84,41 @@ const useProjectStore = create<ProjectState & ProjectActions>((set) => ({
             }
         });
     
+        if (response.status === 200) { 
+            set({projects: response.data});
+            return response.data as Project[];
+        } else {
+            set({projects: []})
+            return [];
+        }
+    },
+
+    loadProjectsByOwnerId: async (ownerId: number) => {
+        const token = useAuthStore.getState().token;
+        const response = await axios.get(`${ENDPOINT}/project/owner/${ownerId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+    
         if (response.status === 200) {
-            console.log(response.data);
+            set({projects: response.data});
+            return response.data as Project[];
+        } else {
+            set({projects: []})
+            return [];
+        }
+    },
+
+    loadProjectsByFilter: async (projectFilter: ProjectFilter) => {
+        const token = useAuthStore.getState().token;
+        const response = await axios.get(`${ENDPOINT}/project/filter${projectFilter}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+    
+        if (response.status === 200) {
             set({projects: response.data});
             return response.data as Project[];
         } else {
@@ -85,10 +126,6 @@ const useProjectStore = create<ProjectState & ProjectActions>((set) => ({
             return [];
         }
     }
-
-    // Todo: loadProjectsByOwnerId
-
-    // Todo: loadProjectsByFilter
 
     // updateProject: async (data: Project) => {
     //     set({ isError: false, isLoading: true });

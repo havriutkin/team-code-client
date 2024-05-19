@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import LandingPage from './page/LandingPage'
 import AuthPage from './page/AuthPage'
 import Profile from './page/Profile'
-import Project from './model/Project'
+import ProjectPage from './page/ProjectPage'
 
 function App() {
  
@@ -13,6 +13,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/profile" element={<Profile/>}/>
+        <Route path="/project" element={<ProjectPage/>}/>
       </Routes>
     </>
   )

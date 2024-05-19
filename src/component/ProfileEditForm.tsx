@@ -106,7 +106,7 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
                     <div className="w-full flex justify-start items-start">
                         <p className="w-1/4 text-xl">Skills:</p>
                         <SkillList className="" skills={[...user.skills, ...skillsToAdd]} isEdit={true} 
-                                    onDelete={onDeleteSkill} onAdd={onAddSkill} elementsStyle="flex-wrap justify-stretch"/>
+                                    onDelete={onDeleteSkill} onAdd={onAddSkill}/>
                     </div>
                 </div>
 
