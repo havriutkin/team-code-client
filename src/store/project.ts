@@ -8,8 +8,10 @@ const ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
 interface ProjectState{
     projects: Project[];
+    project: Project | null;
     isLoading: boolean;
     isError: boolean;
+    isOwner: boolean;
 }
 
 interface ProjectActions {
@@ -53,26 +55,30 @@ const updateProject = async (id: number, data: Project, token: string): Promise<
 
 const useProjectStore = create<ProjectState & ProjectActions>((set) => ({
     projects: [] as Project[],
+    project: null,
     isLoading: false,
     isError: false,
+    isOwner: false,
 
     loadProject: async (id: number) => {
-        set({ isError: false, isLoading: true })
+        set({ project: null, isError: false, isLoading: true, isOwner: false })
         
         if (!id) {
-            set({ isError: true, isLoading: false});
+            set({ isError: true, isLoading: false, isOwner: false});
             return;
         }
 
 
         fetchProject(id).then((data) => {
+            const principalId = useAuthStore.getState().principal?.id;
             set({
-                projects: [data],
+                project: data,
                 isLoading: false,
                 isError: false,
+                isOwner:  principalId === data.owner.id,
             });
         }).catch(() => {
-            set({ isError: true, isLoading: false });
+            set({ isError: true, isLoading: false, isOwner: false });
         });
     },
 

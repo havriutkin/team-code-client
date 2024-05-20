@@ -12,12 +12,12 @@ interface ProjectViewProps {
 
 function ProjectView({project, className} : ProjectViewProps) {
     const navigate  = useNavigate();
-    const pickProject = ()=> {
-        navigate("/project", { state: {project: project}});
+    const pickProject = (id: number)=> {
+        navigate("/project", { state: {projectId: id}});
     }
 
     return (
-        <div className={`h-40 ${className}`}  onClick={() => {pickProject()}}>
+        <div className={`h-40 ${className}`}  onClick={() => {pickProject(project.id)}}>
             <div className="bg-custom-blue min-w-1/4 w-fit h-1/4 px-3 flex flex-col justify-center items-center rounded-tl-md rounded-br-lg">
                 <p className="text-xl font-bold cursor-pointer">{project.name}</p>
             </div>
