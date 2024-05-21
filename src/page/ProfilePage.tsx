@@ -49,6 +49,7 @@ function Profile(){
 
     useEffect(() => {
         if (user) {
+            console.log(user);
             loadProjectsByUserId(user.id);
         }
     }, [user, loadProjectsByUserId]);
@@ -81,14 +82,14 @@ function Profile(){
                     </div>
 
                     <div className="w-5/6 h-full flex flex-col justify-between items-start gap-3">
-                        <div className="flex justify-stretch gap-10 items-center">
+                        <div className="w-3/4 flex justify-between items-center">
                             <h1 className="font-extrabold text-6xl">{user.name}</h1>
                             {isOwner && <Button text="Edit" 
-                                            className="w-24 h-3/4 rounded-lg text-2xl bg-custom-blue transition-all 
+                                            className="w-24 h-3/4 rounded-lg text-xl bg-custom-blue transition-all 
                                                         hover:scale-105 active:scale-95" 
                                             onClick={() => setIsEditing(true)}/>}
                             {isOwner && <Button text="Log Out" 
-                                            className="w-24 h-3/4 rounded-lg text-2xl bg-custom-blue transition-all 
+                                            className="w-24 h-3/4 rounded-lg text-xl bg-custom-blue transition-all 
                                             hover:scale-105 active:scale-95" 
                                             onClick={handleLogOut}/>}
                         </div>
@@ -118,7 +119,7 @@ function Profile(){
                     <div className="w-full h-auto min-h-20 flex flex-col">
                         <h2 className="font-bold text-3xl mb-5">Recent Projects</h2>
                         <div>
-                            <ProjectList projects={projects} className="flex h-auto mb-5"/>
+                            <ProjectList projects={projects.slice(0, 3)} className="flex h-auto mb-5"/>
                         </div>
                     </div>
                 </div>

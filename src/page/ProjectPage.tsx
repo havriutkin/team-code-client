@@ -9,16 +9,15 @@ import { FaGithub } from "react-icons/fa";
 import { RiTeamFill } from "react-icons/ri";
 import { IoMdSettings } from "react-icons/io";
 import { useState } from "react";
-import useUserStore from "../store/user";
 import { useEffect } from "react";
 import useAuthStore from "../store/auth";
+import Button from "../component/Button";
 
 function ProjectPage() {
     const location = useLocation();
-    const { project, isLoading, isError, isOwner, loadProject} = useProjectStore();
+    const { project, isLoading, isError, isOwner, isMember, loadProject} = useProjectStore();
     const { projectId } = location.state;
-    const { user } = useUserStore();
-    const { fetchPrincipal } = useAuthStore();
+    const { principal, fetchPrincipal } = useAuthStore();
 
     useEffect(()=>{
         loadProject(projectId);
@@ -34,65 +33,82 @@ function ProjectPage() {
 
 
     return (
-        <div className=" w-screen h-screen flex justify-center text-white">
+        <div className="w-screen h-screen overflow-y-scroll scrollbar-thin scrollbar-track-custom-blue bg-dark-bg font-sans text-white flex justify-center">
             <div className="w-1/12">
                 <SideBar/>
             </div>
-            <div className=" w-3/4 flex flex-col gap-10">
-                <div>
-                    <div className=" w-auto flex items-center gap-20 pt-10">
+            <div className="w-3/4 flex flex-col items-start">
+                <div className="w-5/6 h-2/6 flex flex-col items-start justify-evenly">
+                    <div className="w-full flex items-center justify-between">
                         <h1 className="font-extrabold text-5xl">{project?.name}</h1>
-                        {isOwner ?
-                            <div className=" w-1/5 flex justify-between">
-                                <div className=" flex justify-center items-center bg-custom-blue w-fit h-10 px-2 rounded-lg">
-                                    <p>View join requests</p>
-                                </div> 
-                                <IoMdSettings className=" text-4xl"/>
-                            </div>:
-                            <div>
-                                <div className=" flex justify-center items-center bg-custom-blue w-fit h-10 px-2 rounded-lg">
-                                    <p>Send join request</p>
-                                </div> 
-                            </div>
-                        }
-                    </div>
-                </div>
-                <div className="flex flex-col items-start gap-5">
-                    <div className="flex gap-16">
-                        <div className="flex justify-center text-2xl gap-2">
-                            <BsPersonFillGear className="text-3xl"/>
-                            <p className="font-light">Project owner: </p>
-                            <p className="font-light">{project?.owner.name}</p>
-                        </div>
-                        <div className="flex justify-center text-2xl gap-2">
-                            <IoCalendarNumber className="text-3xl"/>
-                            <p className="font-light">{project?.startDate.toString().split("T")[0]}</p>
-                        </div>
-                        
-                    </div>
-                    <div className="flex items-center gap-16">
-                            {project?.status ? 
-                            <div className="flex justify-center items-center gap-1">
-                                <BsCircleFill className="text-xs text-custom-green"/> 
-                                <p className="font-light">Active</p>
-                            </div> : 
-                            <div className="flex justify-center items-center gap-1">
-                                <BsCircleFill className="text-xs text-red-500"/> 
-                                <p className="font-light">Not Active</p>
-                            </div>
+                        <div className="w-1/2">
+                            {
+                                isOwner ?
+                                <div className="w-full flex items-center justify-around">
+                                    <Button text="View Join Requests" 
+                                            className="h-3/4 p-3 rounded-lg bg-custom-blue transition-all 
+                                                hover:scale-105 active:scale-95" 
+                                            onClick={()=>{}}/>
+                                    <Button text="View Participants" 
+                                            className="h-3/4 p-3 rounded-lg bg-custom-blue transition-all 
+                                                hover:scale-105 active:scale-95" 
+                                            onClick={()=>{}}/>
+                                    <IoMdSettings className="text-3xl transition-all hover:scale-110 active:scale-95"/>
+                                </div>
+                                :
+                                <div>
+                                    {
+                                        isMember ? 
+                                        <Button text="Leave Project" 
+                                                className="h-3/4 p-3 rounded-lg bg-custom-blue transition-all 
+                                                    hover:scale-105 active:scale-95" 
+                                                onClick={()=>{}}/>
+                                        :
+                                        <Button text="Send Join Request" 
+                                                className="h-3/4 p-3 rounded-lg bg-custom-blue transition-all 
+                                                    hover:scale-105 active:scale-95" 
+                                                onClick={()=>{}}/>
+                                    }    
+                                </div>
                             }
-                            <div className=" flex justify-center items-center gap-1">
-                                <FaGithub className="text-xl"/>
-                                { project?.gitRepository ?
-                                    <p className="font-light">{project.gitRepository}</p>:
-                                    <p className="font-light">Undefined</p>
+                        </div>
+                    </div>
+                    <div className="w-full h-1/2 flex flex-col items-start justify-evenly">
+                        <div className="w-1/2 flex items-center justify-between">
+                            <div className="flex justify-center text-xl gap-2">
+                                <BsPersonFillGear className="text-3xl"/>
+                                <p className="font-light">Project owner: </p>
+                                <p className="font-light">{project?.owner.name}</p>
+                            </div>
+                            <div className="flex justify-center text-xl gap-2">
+                                <IoCalendarNumber className="text-3xl"/>
+                                <p className="font-light">{project?.startDate.toString().split("T")[0]}</p>
+                            </div>
+                        </div>
+                        <div className="w-2/3 flex items-center justify-between">
+                                {project?.status ? 
+                                <div className="flex justify-center items-center gap-1">
+                                    <BsCircleFill className="text-xs text-custom-green"/> 
+                                    <p className="font-light">Active</p>
+                                </div> : 
+                                <div className="flex justify-center items-center gap-1">
+                                    <BsCircleFill className="text-xs text-red-500"/> 
+                                    <p className="font-light">Not Active</p>
+                                </div>
                                 }
-                            
-                            </div>
-                            <div className=" flex justify-center items-center gap-1">
-                                <RiTeamFill className="text-1xl"/>
-                                <p>Current team size {project?.participantsNumber}/{project?.maxParticipantsNumber}</p>
-                            </div>
+                                <div className=" flex justify-center items-center gap-1">
+                                    <FaGithub className="text-xl"/>
+                                    { project?.gitRepository ?
+                                        <p className="font-light">{project.gitRepository}</p>:
+                                        <p className="font-light">Undefined</p>
+                                    }
+                                
+                                </div>
+                                <div className=" flex justify-center items-center gap-1">
+                                    <RiTeamFill className="text-1xl"/>
+                                    <p>Current team size {project?.participantsNumber}/{project?.maxParticipantsNumber}</p>
+                                </div>
+                        </div>
                     </div>
                 </div>
                 <div className=" w-2/3 flex flex-col gap-5">

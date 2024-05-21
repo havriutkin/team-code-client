@@ -2,7 +2,6 @@ import { create } from "zustand";
 import Project from "../model/Project";
 import useAuthStore from "./auth";
 import axios from "axios";
-import ProjectFilter from "../model/ProjectFilter";
 
 const ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
@@ -12,16 +11,20 @@ interface ProjectState{
     isLoading: boolean;
     isError: boolean;
     isOwner: boolean;
+    isMember: boolean;
 }
 
 interface ProjectActions {
     loadProject: (id: number) => Promise<void>;
-    loadProjectsByUserId: (userId: number) => Promise<Project[]>
-    loadProjectsByOwnerId: (ownerOd: number) => Promise<Project[]>
-    loadProjectsByFilter: (projectFilter: ProjectFilter) => Promise<Project[]>
-    //updateProjec: (data: Project) => Promise<void>; 
+    loadProjectsByUserId: (userId: number) => Promise<void>
+    loadProjectsByMemberId: (memberId: number) => Promise<void>
+    loadProjectsByOwnerId: (ownerOd: number) => Promise<void>
+    //loadProjectsByFilter: (projectFilter: ProjectFilter) => Promise<void>
+    //updateProject: (data: Project) => Promise<void>; 
     //addSkills: (skillIds: number[]) => Promise<void>;
     //removeSkills: (skillIds: number[]) => Promise<void>;
+    //addParticipant: (userId: number) => Promise<void>;
+    //removeParticipant: (userId: number) => Promise<void>;
 }
 
 const fetchProject = async (id: number): Promise<Project> => {
@@ -39,19 +42,51 @@ const fetchProject = async (id: number): Promise<Project> => {
     }
 }
 
-const updateProject = async (id: number, data: Project, token: string): Promise<Project> => {
-    const response = await axios.put(`${ENDPOINT}/project/${id}`, data, {
+const fetchProjectsByMemberId = async (memberId: number): Promise<Project[]> => {
+    const token = useAuthStore.getState().token;
+    const response = await axios.get(`${ENDPOINT}/project/member/${memberId}`, {
         headers: {
             Authorization: `Bearer ${token}`
         }
     });
-    if (response.status === 200) {
-        return response.data as Project;
-    } else {
-        throw new Error("Error updating project");
-    }
-};
 
+    if (response.status === 200) {
+        return response.data as Project[];
+    } else {
+        return [];
+    }
+}
+
+const fetchProjectsByOwnerId = async (ownerId: number): Promise<Project[]> => {
+    const token = useAuthStore.getState().token;
+    const response = await axios.get(`${ENDPOINT}/project/owner/${ownerId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    if (response.status === 200) {
+        return response.data as Project[];
+    } else {
+        return [];
+    }
+}
+
+const fetchProjectsByUserId = async (userId: number): Promise<Project[]> => {
+    // Fetch projects where the user is either the owner or a member
+    const projectsByMember = await fetchProjectsByMemberId(userId);
+    const projectsByOwner = await fetchProjectsByOwnerId(userId);
+
+    const uniqueProjects = projectsByMember.filter(p => !projectsByOwner.map(p => p.id).includes(p.id));
+    
+    return [...projectsByOwner, ...uniqueProjects];
+}
+
+const isMember = async (projectId: number, userId: number): Promise<boolean> => {
+    const projects = await fetchProjectsByMemberId(userId);
+    const projectIds = projects.map(p => p.id);
+    return projectIds.includes(projectId);
+}
 
 const useProjectStore = create<ProjectState & ProjectActions>((set) => ({
     projects: [] as Project[],
@@ -59,6 +94,7 @@ const useProjectStore = create<ProjectState & ProjectActions>((set) => ({
     isLoading: false,
     isError: false,
     isOwner: false,
+    isMember: false,
 
     loadProject: async (id: number) => {
         set({ project: null, isError: false, isLoading: true, isOwner: false })
@@ -68,34 +104,42 @@ const useProjectStore = create<ProjectState & ProjectActions>((set) => ({
             return;
         }
 
-
-        fetchProject(id).then((data) => {
+        try {
             const principalId = useAuthStore.getState().principal?.id;
+            const data = await fetchProject(id);
+
+            let member = false;
+            if (principalId) {
+                member = await isMember(id, principalId);
+            }
+
             set({
                 project: data,
                 isLoading: false,
                 isError: false,
                 isOwner:  principalId === data.owner.id,
+                isMember: member
             });
-        }).catch(() => {
+        } catch (error) {
             set({ isError: true, isLoading: false, isOwner: false });
-        });
+            console.error("Error loading project:", error);
+        }
     },
 
     loadProjectsByUserId: async (userId: number) => {
-        const token = useAuthStore.getState().token;
-        const response = await axios.get(`${ENDPOINT}/project/member/${userId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-    
-        if (response.status === 200) { 
-            set({projects: response.data});
-            return response.data as Project[];
-        } else {
-            set({projects: []})
-            return [];
+        set({ projects: [], isLoading: true, isError: false });
+
+        if (!userId) {
+            set({ projects: [], isLoading: false, isError: true });
+            return;
+        }
+
+        try {
+            const data = await fetchProjectsByUserId(userId);
+            set({ projects: data, isLoading: false, isError: false });
+        } catch (error) {
+            set({ projects: [], isLoading: false, isError: true });
+            console.error("Error loading projects:", error);
         }
     },
 
@@ -109,27 +153,23 @@ const useProjectStore = create<ProjectState & ProjectActions>((set) => ({
     
         if (response.status === 200) {
             set({projects: response.data});
-            return response.data as Project[];
         } else {
             set({projects: []})
-            return [];
         }
     },
 
-    loadProjectsByFilter: async (projectFilter: ProjectFilter) => {
+    loadProjectsByMemberId: async (memberId: number) => {
         const token = useAuthStore.getState().token;
-        const response = await axios.get(`${ENDPOINT}/project/filter${projectFilter}`, {
+        const response = await axios.get(`${ENDPOINT}/project/member/${memberId}`, {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${token}`
             }
         });
     
         if (response.status === 200) {
             set({projects: response.data});
-            return response.data as Project[];
         } else {
             set({projects: []})
-            return [];
         }
     }
 

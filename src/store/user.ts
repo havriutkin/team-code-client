@@ -7,6 +7,7 @@ const ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
 interface UserState {
     user: User | null;
+    users: User[];
     isOwner: boolean;
     isLoading: boolean;
     isError: boolean;
@@ -85,6 +86,7 @@ const deleteSkills = async (userId: number, skillIds: number[], token: string): 
 
 const useUserStore = create<UserState & UserActions>((set) => ({
     user: null,
+    users: [] as User[],
     isOwner: false,
     isLoading: false,
     isError: false,
