@@ -1,4 +1,4 @@
-import ProfileEditForm from "./ProfileEditForm";
+import ProfileEditForm from "../forms/ProfileEditForm";
 import { motion, AnimatePresence } from "framer-motion";
 import useUserStore from "../store/user";
 import User from "../model/UserModel";
@@ -28,6 +28,10 @@ function ProfileEditPopup({ onClose, onSave }: ProfileEditPopupProps) {
     const {user, updateUser, addSkills, removeSkills} = useUserStore();
 
     const handleSave = async (data: ProfileEditFormInput, skillsToAdd: number[], skillsToDelete: number[]) => {
+        if (!user) {
+            return;
+        }
+
         const userData: User = {
             id: user.id,
             name: data.username,

@@ -1,7 +1,7 @@
 import Skill from "../model/SkillModel";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { IoIosAddCircleOutline } from "react-icons/io";
-import SkillForm from "./SkillForm";
+import SkillForm from "../forms/SkillForm";
 import { useState } from "react";
 
 interface SkillListProps {
@@ -36,7 +36,7 @@ function SkillList({ skills, className, isEdit=false, onDelete, onAdd}: SkillLis
 
     return(
         <div className={className}>
-            { skills && skills.length > 0 ?
+            { skills ?
                 <ul className={`w-full h-full flex flex-wrap items-start gap-4`}>
                     {skills.map((skill, index) => {
                         if (skillsToDelete.includes(skill.id)) {

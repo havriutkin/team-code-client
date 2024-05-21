@@ -8,50 +8,48 @@ import { FaGithub } from "react-icons/fa";
 import { SiLevelsdotfyi } from "react-icons/si";
 import LoadingPage from "./LoadingPage";
 import ErrorPage from "./ErrorPage";
-import useAuthStore from "../store/auth";
 import Button from "../component/Button";
 import ProfileEditForm from "../component/ProfileEditPopup";
 import { motion } from "framer-motion";
 import SkillList from "../component/SkillList"; 
 import ProjectList from "../component/ProjectList";
 import useProjectStore from "../store/project";
+import useAuthStore from "../store/auth";
 
 // TODO: Add LogOut Button
 
 function Profile(){
     const location = useLocation();
     const { email, newUserTip } = location.state;
-    const { user, loadUser, isLoading, isError} = useUserStore();
-    const [isOwner, setIsOwner] = useState(false);
-    const [ isEditing, setIsEditing ] = useState(false);
     const { fetchPrincipal } = useAuthStore();
+    const { user, loadUser, isLoading, isError, isOwner } = useUserStore();
     const { projects, loadProjectsByUserId } = useProjectStore();
+    const [ isEditing, setIsEditing ] = useState(false);
 
     useEffect(() => {
-        if (email) {
-            fetchPrincipal().then((principal) => {
-                if (!principal) {
-                    return;
-                }
-                
-                loadUser(email).then(() => {
-                    if(user.id === principal?.id) {
-                        setIsOwner(true);
-                    } else {
-                        setIsOwner(false)
-                    }
-                    loadProjectsByUserId(user.id);
-                });
-                
-            });
+        if (!email) {
+            return;
         }
-    }, [email, loadUser, fetchPrincipal, user.id, loadProjectsByUserId]);
+
+        const load = async () => {
+            await fetchPrincipal();
+            await loadUser(email);
+        }
+        load();
+    }, [email, loadUser, fetchPrincipal]);
+
+
+    useEffect(() => {
+        if (user) {
+            loadProjectsByUserId(user.id);
+        }
+    }, [user, loadProjectsByUserId]);
 
     const onEditFormSave = () => {
         setIsEditing(false);
     }
 
-    if (isLoading) {
+    if (isLoading || !user) {
         return <LoadingPage/>;
     }
 
