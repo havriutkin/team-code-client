@@ -1,7 +1,7 @@
 import useProjectStore from "../store/project";
 import LoadingPage from "./LoadingPage";
 import ErrorPage from "./ErrorPage";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import SideBar from "../component/Sidebar";
 import { BsCircleFill, BsPersonFillGear } from "react-icons/bs";
 import { IoCalendarNumber } from "react-icons/io5";
@@ -15,9 +15,19 @@ import Button from "../component/Button";
 
 function ProjectPage() {
     const location = useLocation();
-    const { project, isLoading, isError, isOwner, isMember, loadProject} = useProjectStore();
+    const { project, isLoading, isError, isOwner, isMember, loadProject, removeParticipant} = useProjectStore();
     const { projectId } = location.state;
     const { principal, fetchPrincipal } = useAuthStore();
+    const navigate = useNavigate();
+
+    const handleLeaveProject = async () => {
+        if (!principal || !projectId) {
+            return;
+        }
+
+        await removeParticipant(principal.id);
+        navigate("/profile", {state: {email: principal.email }});
+    }
 
     useEffect(()=>{
         loadProject(projectId);
@@ -62,7 +72,7 @@ function ProjectPage() {
                                         <Button text="Leave Project" 
                                                 className="h-3/4 p-3 rounded-lg bg-custom-blue transition-all 
                                                     hover:scale-105 active:scale-95" 
-                                                onClick={()=>{}}/>
+                                                onClick={handleLeaveProject}/>
                                         :
                                         <Button text="Send Join Request" 
                                                 className="h-3/4 p-3 rounded-lg bg-custom-blue transition-all 

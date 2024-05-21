@@ -49,7 +49,6 @@ function Profile(){
 
     useEffect(() => {
         if (user) {
-            console.log(user);
             loadProjectsByUserId(user.id);
         }
     }, [user, loadProjectsByUserId]);

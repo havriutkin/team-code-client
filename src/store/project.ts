@@ -16,15 +16,16 @@ interface ProjectState{
 
 interface ProjectActions {
     loadProject: (id: number) => Promise<void>;
-    loadProjectsByUserId: (userId: number) => Promise<void>
-    loadProjectsByMemberId: (memberId: number) => Promise<void>
-    loadProjectsByOwnerId: (ownerOd: number) => Promise<void>
+    loadProjectsByUserId: (userId: number) => Promise<void>;
+    loadProjectsByMemberId: (memberId: number) => Promise<void>;
+    loadProjectsByOwnerId: (ownerOd: number) => Promise<void>;
     //loadProjectsByFilter: (projectFilter: ProjectFilter) => Promise<void>
     //updateProject: (data: Project) => Promise<void>; 
     //addSkills: (skillIds: number[]) => Promise<void>;
     //removeSkills: (skillIds: number[]) => Promise<void>;
+    //sendJoinRequest: (projectId: number) => Promise<void>;
     //addParticipant: (userId: number) => Promise<void>;
-    //removeParticipant: (userId: number) => Promise<void>;
+    removeParticipant: (userId: number) => Promise<void>;
 }
 
 const fetchProject = async (id: number): Promise<Project> => {
@@ -44,30 +45,41 @@ const fetchProject = async (id: number): Promise<Project> => {
 
 const fetchProjectsByMemberId = async (memberId: number): Promise<Project[]> => {
     const token = useAuthStore.getState().token;
-    const response = await axios.get(`${ENDPOINT}/project/member/${memberId}`, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    });
+    try {
+        const response = await axios.get(`${ENDPOINT}/project/member/${memberId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
 
-    if (response.status === 200) {
-        return response.data as Project[];
-    } else {
-        return [];
+        if (response.status === 200) {
+            return response.data as Project[];
+        } else {
+            return [];
+        }
+    } catch (error) {
+        console.log(`Error loading projects by member id: ${error}`)
+        return []
     }
 }
 
 const fetchProjectsByOwnerId = async (ownerId: number): Promise<Project[]> => {
     const token = useAuthStore.getState().token;
-    const response = await axios.get(`${ENDPOINT}/project/owner/${ownerId}`, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    });
 
-    if (response.status === 200) {
-        return response.data as Project[];
-    } else {
+    try {
+        const response = await axios.get(`${ENDPOINT}/project/owner/${ownerId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        if (response.status === 200) {
+            return response.data as Project[];
+        } else {
+            return [];
+        }
+    } catch (error) {
+        console.log(`Error loading projects by owner id: ${error}`)
         return [];
     }
 }
@@ -76,16 +88,27 @@ const fetchProjectsByUserId = async (userId: number): Promise<Project[]> => {
     // Fetch projects where the user is either the owner or a member
     const projectsByMember = await fetchProjectsByMemberId(userId);
     const projectsByOwner = await fetchProjectsByOwnerId(userId);
-
-    const uniqueProjects = projectsByMember.filter(p => !projectsByOwner.map(p => p.id).includes(p.id));
     
-    return [...projectsByOwner, ...uniqueProjects];
+    return [...projectsByOwner, ...projectsByMember];
 }
 
 const isMember = async (projectId: number, userId: number): Promise<boolean> => {
     const projects = await fetchProjectsByMemberId(userId);
     const projectIds = projects.map(p => p.id);
     return projectIds.includes(projectId);
+}
+
+const deleteParticipant = async (projectId: number, userId: number): Promise<void> => {
+    const token = useAuthStore.getState().token;
+    const response = await axios.delete(`${ENDPOINT}/project/${projectId}/participant/${userId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    if (response.status !== 200) {
+        throw new Error("Error deleting participant");
+    }
 }
 
 const useProjectStore = create<ProjectState & ProjectActions>((set) => ({
@@ -171,23 +194,25 @@ const useProjectStore = create<ProjectState & ProjectActions>((set) => ({
         } else {
             set({projects: []})
         }
-    }
-
-    // updateProject: async (data: Project) => {
-    //     set({ isError: false, isLoading: true });
+    },
     
-    //     const token = useAuthStore.getState().token;
+    removeParticipant: async (userId: number) => {
+        set({ isError: false, isLoading: true });
 
-    //     try {
-    //         updateProject(data.id, data, token).then((project) => {
-    //             set({ project, isLoading: false });
-    //         });
-    //     } catch (error) {
-    //         set({ isError: true, isLoading: false});
-    //         console.error("Error updating user:", error);
-    //     }
-    // }
+        const projectId = useProjectStore.getState().project?.id;
+        if (!projectId) {
+            set({ isError: true, isLoading: false });
+            return;
+        }
 
-}))
+        try {
+            await deleteParticipant(projectId, userId);
+            set({ isLoading: false });
+        } catch (error) {
+            set({ isError: true, isLoading: false });
+            console.error("Error removing participant:", error);
+        }
+    },
+}));
 
 export default useProjectStore;
