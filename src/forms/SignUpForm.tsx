@@ -17,7 +17,7 @@ function SignUpForm() {
     const onSubmit: SubmitHandler<SignUpFormInputs> = async (data) => {
         try {
             await signUp(data.username, data.email, data.password);
-            navigate('/profile', {state: {email: data.email}});
+            navigate('/profile', {state: {email: data.email, newUserTip: true}});
         } catch (error) {
             console.error(error);
         }

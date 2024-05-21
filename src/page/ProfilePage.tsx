@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import useUserStore from "../store/user";
 import SideBar from "../component/Sidebar";
 import { BsPersonCircle } from "react-icons/bs";
@@ -15,16 +15,24 @@ import SkillList from "../component/SkillList";
 import ProjectList from "../component/ProjectList";
 import useProjectStore from "../store/project";
 import useAuthStore from "../store/auth";
+import NewUserPopup from "../component/NewUserPopup";
 
 // TODO: Add LogOut Button
 
 function Profile(){
     const location = useLocation();
     const { email, newUserTip } = location.state;
-    const { fetchPrincipal } = useAuthStore();
+    const [ isTipDisplayed, setIsTipDisplayed ] = useState<boolean>(newUserTip || false);
+    const { fetchPrincipal, logout } = useAuthStore();
     const { user, loadUser, isLoading, isError, isOwner } = useUserStore();
     const { projects, loadProjectsByUserId } = useProjectStore();
     const [ isEditing, setIsEditing ] = useState(false);
+    const navigate = useNavigate();
+
+    const handleLogOut = () => {
+        logout();
+        navigate('/');
+    }
 
     useEffect(() => {
         if (!email) {
@@ -79,6 +87,10 @@ function Profile(){
                                             className="w-24 h-3/4 rounded-lg text-2xl bg-custom-blue transition-all 
                                                         hover:scale-105 active:scale-95" 
                                             onClick={() => setIsEditing(true)}/>}
+                            {isOwner && <Button text="Log Out" 
+                                            className="w-24 h-3/4 rounded-lg text-2xl bg-custom-blue transition-all 
+                                            hover:scale-105 active:scale-95" 
+                                            onClick={handleLogOut}/>}
                         </div>
                         <div className="w-full flex justify-between my-2">
                             <div className="w-1/3 flex justify-start items-center gap-2">
@@ -110,7 +122,7 @@ function Profile(){
                         </div>
                     </div>
                 </div>
-                {newUserTip && <p>Welcome to TeamCode! We're excited to have you on board.</p>}
+                {isTipDisplayed && <NewUserPopup onClose={() => setIsTipDisplayed(false)} />}
                 {isEditing && <ProfileEditForm onClose={() => setIsEditing(false)} onSave={onEditFormSave}/>}
             </motion.div>
         </div>

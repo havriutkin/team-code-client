@@ -21,6 +21,11 @@ interface UserActions {
 
 const fetchUser = async (email: string): Promise<User> => {
     const token = useAuthStore.getState().token;
+
+    if (!token) {
+        throw new Error("No token found");
+    }
+
     const response = await axios.get(`${ENDPOINT}/user/email/${email}`, {
         headers: {
             Authorization: `Bearer ${token}`,
@@ -90,7 +95,6 @@ const useUserStore = create<UserState & UserActions>((set) => ({
         try {
             const user = await fetchUser(email);
             const principalId = useAuthStore.getState().principal?.id;
-            console.log("Principal ID:", principalId);
             set({ user, isLoading: false, isOwner: user.id === principalId });
         } catch (error) {
             set({ isError: true, isLoading: false });

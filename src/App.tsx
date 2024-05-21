@@ -2,7 +2,7 @@ import './App.css'
 import { Routes, Route } from 'react-router-dom'
 import LandingPage from './page/LandingPage'
 import AuthPage from './page/AuthPage'
-import Profile from './page/Profile'
+import Profile from './page/ProfilePage'
 import ProjectPage from './page/ProjectPage'
 
 function App() {

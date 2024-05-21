@@ -7,19 +7,15 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 
 function LandingPage() {
-    const { principal, fetchPrincipal } = useAuthStore();
+    const { principal } = useAuthStore();
     const [isAuthorized, setIsAuthorized] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchPrincipal().then(principal => {
-            if(!principal) {
-                setIsAuthorized(false);
-            } else {
-                setIsAuthorized(true);
-            }
-        })
-    }, [fetchPrincipal]);
+        if (principal) {
+            setIsAuthorized(true);
+        }
+    }, [principal]);
 
     const handleButtonClick = () => { 
         if (isAuthorized) {
