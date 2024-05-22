@@ -87,6 +87,10 @@ const deleteSkills = async (userId: number, skillIds: number[], token: string): 
     return;
 };
 
+/*
+TODO: Move isOwner and isMember functionality to useEffect inside components
+*/
+
 const useUserStore = create<State>()(
     persist(
         (set) => ({

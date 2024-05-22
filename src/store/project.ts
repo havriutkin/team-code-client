@@ -152,6 +152,10 @@ const putProject = async (data: Project): Promise<void> => {
     }
 }
 
+/*
+TODO: Move isOwner and isMember functionality to useEffect inside components
+*/
+
 const useProjectStore = create<ProjectState & ProjectActions>()(
     persist(
         (set) => ({
