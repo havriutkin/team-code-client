@@ -3,6 +3,7 @@ import { BsCircleFill } from "react-icons/bs";
 import { FaPeopleGroup } from "react-icons/fa6";
 import SkillList from "./SkillList";
 import { useNavigate } from "react-router-dom";
+import useProjectStore from "../store/project";
 
 interface ProjectViewProps {
     project: Project;
@@ -11,9 +12,10 @@ interface ProjectViewProps {
 
 
 function ProjectView({project, className} : ProjectViewProps) {
+    const { loadProject } = useProjectStore();
     const navigate  = useNavigate();
     const pickProject = (id: number)=> {
-        navigate("/project", { state: {projectId: id}});
+        loadProject(id).then(() => navigate("/project"));
     }
 
     return (

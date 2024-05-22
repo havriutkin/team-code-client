@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import axios, { AxiosRequestConfig } from "axios";
 import useAuthStore from "./auth";
 import User from "../model/UserModel";
@@ -19,6 +20,8 @@ interface UserActions {
     addSkills: (skillIds: number[]) => Promise<void>;
     removeSkills: (skillIds: number[]) => Promise<void>;
 }
+
+type State = UserState & UserActions;
 
 const fetchUser = async (email: string): Promise<User> => {
     const token = useAuthStore.getState().token;
@@ -84,79 +87,87 @@ const deleteSkills = async (userId: number, skillIds: number[], token: string): 
     return;
 };
 
-const useUserStore = create<UserState & UserActions>((set) => ({
-    user: null,
-    users: [] as User[],
-    isOwner: false,
-    isLoading: false,
-    isError: false,
+const useUserStore = create<State>()(
+    persist(
+        (set) => ({
+            user: null,
+            users: [] as User[],
+            isOwner: false,
+            isLoading: false,
+            isError: false,
 
-    loadUser: async (email: string) => {
-        set({ user: null, isError: false, isLoading: true, isOwner: false });
-        
-        try {
-            const user = await fetchUser(email);
-            const principalId = useAuthStore.getState().principal?.id;
-            set({ user, isLoading: false, isOwner: user.id === principalId });
-        } catch (error) {
-            set({ isError: true, isLoading: false });
-            console.error("Error fetching user:", error);
-        }
-    },
+            loadUser: async (email: string) => {
+                set({ user: null, isError: false, isLoading: true, isOwner: false });
+                
+                try {
+                    const user = await fetchUser(email);
+                    const principalId = useAuthStore.getState().principal?.id;
+                    set({ user, isLoading: false, isOwner: user.id === principalId });
+                } catch (error) {
+                    set({ isError: true, isLoading: false });
+                    console.error("Error fetching user:", error);
+                }
+            },
 
-    updateUser: async (data: User) => {
-        set({ isError: false, isLoading: true });
+            updateUser: async (data: User) => {
+                set({ isError: false, isLoading: true });
 
-        const token = useAuthStore.getState().token;
+                const token = useAuthStore.getState().token;
 
-        try {
-            const user = await updateUser(data, token);
-            set({ user, isLoading: false });
-        } catch (error) {
-            set({ isError: true, isLoading: false });
-            console.error("Error updating user:", error);
-        }
-    },
+                try {
+                    const user = await updateUser(data, token);
+                    set({ user, isLoading: false });
+                } catch (error) {
+                    set({ isError: true, isLoading: false });
+                    console.error("Error updating user:", error);
+                }
+            },
 
-    addSkills: async (skillIds: number[]) => {
-        set({ isError: false, isLoading: true });
+            addSkills: async (skillIds: number[]) => {
+                set({ isError: false, isLoading: true });
 
-        const token = useAuthStore.getState().token;
-        const userId = useAuthStore.getState().principal?.id;
+                const token = useAuthStore.getState().token;
+                const userId = useAuthStore.getState().principal?.id;
 
-        if (!userId) {
-            set({ isError: true, isLoading: false });
-            return;
-        }
+                if (!userId) {
+                    set({ isError: true, isLoading: false });
+                    return;
+                }
 
-        try {
-            await postSkills(userId, skillIds, token);
-            set({ isLoading: false });
-        } catch (error) {
-            set({ isError: true, isLoading: false });
-            console.error("Error adding skill:", error);
-        }
-    },
+                try {
+                    await postSkills(userId, skillIds, token);
+                    set({ isLoading: false });
+                } catch (error) {
+                    set({ isError: true, isLoading: false });
+                    console.error("Error adding skill:", error);
+                }
+            },
 
-    removeSkills: async (skillIds: number[]) => {
-        set({ isError: false, isLoading: true });
+            removeSkills: async (skillIds: number[]) => {
+                set({ isError: false, isLoading: true });
 
-        const token = useAuthStore.getState().token;
-        const userId = useAuthStore.getState().principal?.id;
+                const token = useAuthStore.getState().token;
+                const userId = useAuthStore.getState().principal?.id;
 
-        if (!userId) {
-            set({ isError: true, isLoading: false });
-            return;
-        }
+                if (!userId) {
+                    set({ isError: true, isLoading: false });
+                    return;
+                }
 
-        try {
-            await deleteSkills(userId, skillIds, token);
-            set({ isLoading: false });
-        } catch (error) {
-            set({ isError: true, isLoading: false });
-            console.error("Error removing skill:", error);
-        }
-    },
-}));
+                try {
+                    await deleteSkills(userId, skillIds, token);
+                    set({ isLoading: false });
+                } catch (error) {
+                    set({ isError: true, isLoading: false });
+                    console.error("Error removing skill:", error);
+                }
+            },
+        }),
+        {
+            name: 'user-store', 
+            getStorage: () => localStorage,
+        } 
+    )
+);
 
 export default useUserStore;

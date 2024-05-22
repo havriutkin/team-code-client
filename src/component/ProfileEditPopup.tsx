@@ -15,7 +15,6 @@ type ProfileEditFormInput = {
     github: string;
     experience: Experience;
     bio: string;
-    // skills: string[];
 }
 
 
@@ -25,7 +24,7 @@ interface ProfileEditPopupProps {
 }
 
 function ProfileEditPopup({ onClose, onSave }: ProfileEditPopupProps) {
-    const {user, updateUser, addSkills, removeSkills} = useUserStore();
+    const {user, updateUser, addSkills, removeSkills, loadUser} = useUserStore();
 
     const handleSave = async (data: ProfileEditFormInput, skillsToAdd: number[], skillsToDelete: number[]) => {
         if (!user) {
@@ -51,6 +50,8 @@ function ProfileEditPopup({ onClose, onSave }: ProfileEditPopupProps) {
         if (skillsToDelete.length !== 0) {
             await removeSkills(skillsToDelete);
         }
+
+        await loadUser(user.email);  // Reload user to get the updated data
 
         onSave();
     }

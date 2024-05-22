@@ -1,7 +1,7 @@
 import useProjectStore from "../store/project";
 import LoadingPage from "./LoadingPage";
 import ErrorPage from "./ErrorPage";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import SideBar from "../component/Sidebar";
 import { BsCircleFill, BsPersonFillGear } from "react-icons/bs";
 import { IoCalendarNumber } from "react-icons/io5";
@@ -9,29 +9,24 @@ import { FaGithub } from "react-icons/fa";
 import { RiTeamFill } from "react-icons/ri";
 import { IoMdSettings } from "react-icons/io";
 import { useState } from "react";
-import { useEffect } from "react";
 import useAuthStore from "../store/auth";
 import Button from "../component/Button";
+import ProjectEditPopup from "../component/ProjectEditPopup";
 
 function ProjectPage() {
-    const location = useLocation();
-    const { project, isLoading, isError, isOwner, isMember, loadProject, removeParticipant} = useProjectStore();
-    const { projectId } = location.state;
-    const { principal, fetchPrincipal } = useAuthStore();
+    const { project, isLoading, isError, isOwner, isMember, removeParticipant} = useProjectStore();
+    const { principal } = useAuthStore();
     const navigate = useNavigate();
+    const [isEditing, setIsEditing] = useState(false);
 
     const handleLeaveProject = async () => {
-        if (!principal || !projectId) {
+        if (!principal || !project) {
             return;
         }
 
         await removeParticipant(principal.id);
         navigate("/profile", {state: {email: principal.email }});
     }
-
-    useEffect(()=>{
-        loadProject(projectId);
-    }, []);
 
     if (isLoading) {
         return <LoadingPage/>;
@@ -40,7 +35,6 @@ function ProjectPage() {
     if (isError) {
         return <ErrorPage/>;
     }
-
 
     return (
         <div className="w-screen h-screen overflow-y-scroll scrollbar-thin scrollbar-track-custom-blue bg-dark-bg font-sans text-white flex justify-center">
@@ -63,7 +57,8 @@ function ProjectPage() {
                                             className="h-3/4 p-3 rounded-lg bg-custom-blue transition-all 
                                                 hover:scale-105 active:scale-95" 
                                             onClick={()=>{}}/>
-                                    <IoMdSettings className="text-3xl transition-all hover:scale-110 active:scale-95"/>
+                                    <IoMdSettings className="text-3xl transition-all hover:scale-110 active:scale-95"
+                                            onClick={() => {setIsEditing(true)}}/>
                                 </div>
                                 :
                                 <div>
@@ -127,6 +122,8 @@ function ProjectPage() {
                 </div>
                 
             </div>
+            {isEditing && <ProjectEditPopup onClose={()=>{setIsEditing(false)}} 
+                                            onSave={() => {setIsEditing(false)}}/>}
         </div>
     );
 }

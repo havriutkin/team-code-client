@@ -2,6 +2,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Button from "../component/Button";
 import useAuthStore from "../store/auth";
 import { useNavigate } from "react-router-dom";
+import useUserStore from "../store/user";
 
 type SignUpFormInputs = {
     username: string;
@@ -12,12 +13,14 @@ type SignUpFormInputs = {
 function SignUpForm() {
     const { register, formState: {errors}, handleSubmit } = useForm<SignUpFormInputs>();
     const { register: signUp, isLoading } = useAuthStore();
+    const { loadUser } = useUserStore();
     const navigate = useNavigate();
 
     const onSubmit: SubmitHandler<SignUpFormInputs> = async (data) => {
         try {
             await signUp(data.username, data.email, data.password);
-            navigate('/profile', {state: {email: data.email, newUserTip: true}});
+            await loadUser(data.email);
+            navigate('/profile', { state: { newUserTip: true } });
         } catch (error) {
             console.error(error);
         }

@@ -7,7 +7,6 @@ import { MdEmail } from "react-icons/md";
 import { FaGithub } from "react-icons/fa";
 import { SiLevelsdotfyi } from "react-icons/si";
 import LoadingPage from "./LoadingPage";
-import ErrorPage from "./ErrorPage";
 import Button from "../component/Button";
 import ProfileEditForm from "../component/ProfileEditPopup";
 import { motion } from "framer-motion";
@@ -21,10 +20,10 @@ import NewUserPopup from "../component/NewUserPopup";
 
 function Profile(){
     const location = useLocation();
-    const { email, newUserTip } = location.state;
+    const { newUserTip } = location.state ? location.state as { newUserTip: boolean } : { newUserTip: false };
     const [ isTipDisplayed, setIsTipDisplayed ] = useState<boolean>(newUserTip || false);
-    const { fetchPrincipal, logout } = useAuthStore();
-    const { user, loadUser, isLoading, isError, isOwner } = useUserStore();
+    const { logout } = useAuthStore();
+    const { user, isLoading, isError, isOwner } = useUserStore();
     const { projects, loadProjectsByUserId } = useProjectStore();
     const [ isEditing, setIsEditing ] = useState(false);
     const navigate = useNavigate();
@@ -33,19 +32,6 @@ function Profile(){
         logout();
         navigate('/');
     }
-
-    useEffect(() => {
-        if (!email) {
-            return;
-        }
-
-        const load = async () => {
-            await fetchPrincipal();
-            await loadUser(email);
-        }
-        load();
-    }, [email, loadUser, fetchPrincipal]);
-
 
     useEffect(() => {
         if (user) {
@@ -62,7 +48,7 @@ function Profile(){
     }
 
     if (isError) {
-        return <ErrorPage/>;
+        navigate('/');
     }
 
     return (

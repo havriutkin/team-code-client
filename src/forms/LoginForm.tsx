@@ -2,6 +2,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Button from "../component/Button";
 import useAuthStore from "../store/auth";
 import { useNavigate } from "react-router-dom";
+import useUserStore from "../store/user";
 
 type LoginFormInput = {
     email: string;
@@ -11,12 +12,14 @@ type LoginFormInput = {
 function LoginForm() {
     const { register, formState: {errors}, handleSubmit } = useForm<LoginFormInput>();
     const { login, isLoading } = useAuthStore();
+    const { loadUser } = useUserStore();
     const navigate = useNavigate();
 
     const onSubmit: SubmitHandler<LoginFormInput> = async (data) => {
         try {
             await login(data.email, data.password);
-            navigate('/profile', {state: {email: data.email}});
+            await loadUser(data.email);
+            navigate('/profile');
         } catch (error) {
             console.error(error);
         }
