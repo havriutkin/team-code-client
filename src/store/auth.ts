@@ -110,6 +110,7 @@ const useAuthStore = create<AuthState & AuthActions>()(
         {
             name: 'auth-store', 
             getStorage: () => localStorage, 
+            partialize: (state) => ({ token: state.token, principal: state.principal }),
         } 
     )
 );

@@ -72,7 +72,7 @@ function ProjectEditPopup({ onClose, onSave }: ProjectEditPopupProps) {
                         text-white z-10
                         flex flex-col justify-between items-start">
                 <div className="w-full mt-5">
-                    <h1 className="font-bold text-4xl mx-5">Edit Profile</h1>
+                    <h1 className="font-bold text-4xl mx-5">Edit Project</h1>
                     <hr className="w-full border-1 border-white my-5"/>
                 </div>
 

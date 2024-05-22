@@ -6,7 +6,7 @@ import Profile from './page/ProfilePage'
 import ProjectPage from './page/ProjectPage'
 
 function App() {
- 
+
   return (
     <>
       <Routes>

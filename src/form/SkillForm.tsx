@@ -2,7 +2,7 @@ import Button from "../component/Button";
 import Skill from "../model/SkillModel";
 import { useState, useEffect } from "react";
 import SearchBar from "../component/SearchBar";
-import useSkills from "../hooks/useSkills";
+import useSkills from "../hook/useSkills";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { IoIosAddCircleOutline } from "react-icons/io";
 

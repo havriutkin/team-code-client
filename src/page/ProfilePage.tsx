@@ -15,6 +15,7 @@ import ProjectList from "../component/ProjectList";
 import useProjectStore from "../store/project";
 import useAuthStore from "../store/auth";
 import NewUserPopup from "../popup/NewUserPopup";
+import ErrorPage from "./ErrorPage";
 
 // TODO: Add LogOut Button
 
@@ -34,10 +35,12 @@ function Profile(){
     }
 
     useEffect(() => {
-        if (user) {
-            loadProjectsByUserId(user.id);
+        if (!user) {
+            navigate('/');
+            return;
         }
-    }, [user, loadProjectsByUserId]);
+        loadProjectsByUserId(user.id);
+    }, [user, loadProjectsByUserId, navigate]);
 
     const onEditFormSave = () => {
         setIsEditing(false);
@@ -48,7 +51,7 @@ function Profile(){
     }
 
     if (isError) {
-        navigate('/');
+        return <ErrorPage/>;
     }
 
     return (

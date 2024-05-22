@@ -8,18 +8,20 @@ import { IoCalendarNumber } from "react-icons/io5";
 import { FaGithub } from "react-icons/fa";
 import { RiTeamFill } from "react-icons/ri";
 import { IoMdSettings } from "react-icons/io";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useAuthStore from "../store/auth";
 import Button from "../component/Button";
 import ProjectEditPopup from "../popup/ProjectEditPopup";
 import { SiLevelsdotfyi } from "react-icons/si";
 import SkillList from "../component/SkillList";
+import ProjectParticipantsPopup from "../popup/ProjectParticipantsPopup";
 
 function ProjectPage() {
-    const { project, isLoading, isError, isOwner, isMember, removeParticipant} = useProjectStore();
+    const { project, isLoading, isError, isOwner, isMember, removeParticipant, loadProject} = useProjectStore();
     const { principal } = useAuthStore();
     const navigate = useNavigate();
     const [isEditing, setIsEditing] = useState(false);
+    const [isParticipantDisplayed, setIsParticipantDisplayed] = useState(false);
 
     const handleLeaveProject = async () => {
         if (!principal || !project) {
@@ -29,6 +31,14 @@ function ProjectPage() {
         await removeParticipant(principal.id);
         navigate("/profile", {state: {email: principal.email }});
     }
+
+    useEffect(() => {
+        if(!project) {
+            return;
+        }
+
+        loadProject(project.id);
+    }, []);
 
     if (isLoading) {
         return <LoadingPage/>;
@@ -58,7 +68,7 @@ function ProjectPage() {
                                     <Button text="View Participants" 
                                             className="h-3/4 p-3 rounded-lg bg-custom-blue transition-all 
                                                 hover:scale-105 active:scale-95" 
-                                            onClick={()=>{}}/>
+                                            onClick={()=>{setIsParticipantDisplayed(true)}}/>
                                     <IoMdSettings className="text-3xl transition-all hover:scale-110 active:scale-95"
                                             onClick={() => {setIsEditing(true)}}/>
                                 </div>
@@ -131,6 +141,7 @@ function ProjectPage() {
             </div>
             {isEditing && <ProjectEditPopup onClose={()=>{setIsEditing(false)}} 
                                             onSave={() => {setIsEditing(false)}}/>}
+            {isParticipantDisplayed && <ProjectParticipantsPopup onClose={()=>{setIsParticipantDisplayed(false)}}/>}
         </div>
     );
 }

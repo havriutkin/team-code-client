@@ -16,6 +16,7 @@ interface UserState {
 
 interface UserActions {
     loadUser: (email: string) => Promise<void>;
+    loadProjectMembers: (projectId: number) => Promise<void>;
     updateUser: (data: User) => Promise<void>;
     addSkills: (skillIds: number[]) => Promise<void>;
     removeSkills: (skillIds: number[]) => Promise<void>;
@@ -42,6 +43,26 @@ const fetchUser = async (email: string): Promise<User> => {
         throw new Error("Error fetching user");
     }
 };
+
+const fetchProjectMembers = async (projectId: number): Promise<User[]> => {
+    const token = useAuthStore.getState().token;
+
+    if (!token) {
+        throw new Error("No token found");
+    }
+
+    const response = await axios.get(`${ENDPOINT}/user/project/${projectId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (response.status === 200) {
+        return response.data as User[];
+    } else {
+        throw new Error("Error fetching project members");
+    }
+}
 
 const updateUser = async (data: User, token: string): Promise<User> => {
     const response = await axios.put(`${ENDPOINT}/user/${useAuthStore.getState().principal?.id}`, data, {
@@ -113,6 +134,18 @@ const useUserStore = create<State>()(
                 }
             },
 
+            loadProjectMembers: async (projectId: number) => {
+                set({ users: [], isError: false, isLoading: true });
+
+                try {
+                    const users = await fetchProjectMembers(projectId);
+                    set({ users, isLoading: false });
+                } catch (error) {
+                    set({ users: [], isLoading: false });
+                    console.error("Error fetching project members:", error);
+                }
+            },
+
             updateUser: async (data: User) => {
                 set({ isError: false, isLoading: true });
 
@@ -170,6 +203,7 @@ const useUserStore = create<State>()(
         {
             name: 'user-store', 
             getStorage: () => localStorage,
+            partialize: (state) => ({ user: state.user, users: state.users, isOwner: state.isOwner }),
         } 
     )
 );

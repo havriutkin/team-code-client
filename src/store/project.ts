@@ -26,6 +26,7 @@ interface ProjectActions {
     removeSkills: (skillIds: number[]) => Promise<void>;
     //sendJoinRequest: (projectId: number) => Promise<void>;
     //addParticipant: (userId: number) => Promise<void>;
+    removeParticipants: (userId: number[]) => Promise<void>;
     removeParticipant: (userId: number) => Promise<void>;
 }
 
@@ -110,6 +111,21 @@ const deleteParticipant = async (projectId: number, userId: number): Promise<voi
     if (response.status !== 200) {
         throw new Error("Error deleting participant");
     }
+}
+
+const deleteParticipants = async (projectId: number, userIds: number[]): Promise<void> => {
+    const token = useAuthStore.getState().token;
+    const response = await axios.delete(`${ENDPOINT}/project/${projectId}/participants`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
+        data: userIds
+    });
+
+    if (response.status !== 200) {
+        throw new Error("Error deleting participants");
+    }
+
 }
 
 const postSkills = async (projectId: number, skillIds: number[]): Promise<void> => {
@@ -261,6 +277,24 @@ const useProjectStore = create<ProjectState & ProjectActions>()(
                 }
             },
 
+            removeParticipants: async (userIds: number[]) => {
+                set({ isError: false, isLoading: true });
+
+                const projectId = useProjectStore.getState().project?.id;
+                if (!projectId) {
+                    set({ isError: true, isLoading: false });
+                    return;
+                }
+
+                try {
+                    await deleteParticipants(projectId, userIds);
+                    set({ isLoading: false });
+                } catch (error) {
+                    set({ isError: true, isLoading: false });
+                    console.error("Error removing participants:", error);
+                }
+            },
+
             updateProject: async (data: Project) => {
                 set({ isError: false, isLoading: true });
 
@@ -312,6 +346,7 @@ const useProjectStore = create<ProjectState & ProjectActions>()(
         {
             name: 'project-store', 
             getStorage: () => localStorage,
+            partialize: (state) => ({ project: state.project, projects: state.projects, isOwner: state.isOwner, isMember: state.isMember }),
         } 
     )
 );
