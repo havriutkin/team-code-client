@@ -8,13 +8,13 @@ import { FaGithub } from "react-icons/fa";
 import { SiLevelsdotfyi } from "react-icons/si";
 import LoadingPage from "./LoadingPage";
 import Button from "../component/Button";
-import ProfileEditForm from "../component/ProfileEditPopup";
+import ProfileEditForm from "../popup/ProfileEditPopup";
 import { motion } from "framer-motion";
 import SkillList from "../component/SkillList"; 
 import ProjectList from "../component/ProjectList";
 import useProjectStore from "../store/project";
 import useAuthStore from "../store/auth";
-import NewUserPopup from "../component/NewUserPopup";
+import NewUserPopup from "../popup/NewUserPopup";
 
 // TODO: Add LogOut Button
 

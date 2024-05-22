@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import Button from "./Button";
+import Button from "../component/Button";
 
 interface NewUserPopupProps {
     onClose: () => void;

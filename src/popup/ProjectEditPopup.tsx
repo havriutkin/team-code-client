@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import useProjectStore from "../store/project";
 import Project from "../model/Project";
-import ProjectEditForm from "../forms/ProjectEditForm";
+import ProjectEditForm from "../form/ProjectEditForm";
 
 enum ProjectLevel {
     EASY = 'EASY',

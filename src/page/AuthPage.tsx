@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "../component/Button";
-import LoginForm from "../forms/LoginForm";
-import SignUpForm from "../forms/SignUpForm";
+import LoginForm from "../form/LoginForm";
+import SignUpForm from "../form/SignUpForm";
 import { AnimatePresence, easeInOut, motion } from "framer-motion";
 import useAuthStore from "../store/auth";
 import ErrorPage from "./ErrorPage";

@@ -1,4 +1,4 @@
-import ProfileEditForm from "../forms/ProfileEditForm";
+import ProfileEditForm from "../form/ProfileEditForm";
 import { motion, AnimatePresence } from "framer-motion";
 import useUserStore from "../store/user";
 import User from "../model/UserModel";

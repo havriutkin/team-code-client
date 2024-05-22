@@ -11,7 +11,7 @@ import { IoMdSettings } from "react-icons/io";
 import { useState } from "react";
 import useAuthStore from "../store/auth";
 import Button from "../component/Button";
-import ProjectEditPopup from "../component/ProjectEditPopup";
+import ProjectEditPopup from "../popup/ProjectEditPopup";
 import { SiLevelsdotfyi } from "react-icons/si";
 import SkillList from "../component/SkillList";
 

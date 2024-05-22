@@ -1,7 +1,7 @@
 import Skill from "../model/SkillModel";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { IoIosAddCircleOutline } from "react-icons/io";
-import SkillForm from "../forms/SkillForm";
+import SkillForm from "../form/SkillForm";
 import { useState } from "react";
 
 interface SkillListProps {
