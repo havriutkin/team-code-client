@@ -23,6 +23,10 @@ interface AuthActions {
     logout: () => void;
 }
 
+/*
+TODO: clear data form localStorage on logout
+*/
+
 const useAuthStore = create<AuthState & AuthActions>()(
     persist(
         (set, get) => ({
