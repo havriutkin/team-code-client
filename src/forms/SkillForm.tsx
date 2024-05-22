@@ -38,7 +38,7 @@ function SkillForm({ className, excludedSkills, onCancel, onConfirm }: SkillForm
     }
 
     return (
-        <div className={`w-full min-h-20 z-20 flex flex-col gap-5 p-5
+        <div className={` w-96  min-h-20 z-20 flex flex-col gap-5 p-5
                         border bg-custom-dark-gray 
                         ${className}`}>
             <div>

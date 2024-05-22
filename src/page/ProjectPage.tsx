@@ -12,6 +12,8 @@ import { useState } from "react";
 import useAuthStore from "../store/auth";
 import Button from "../component/Button";
 import ProjectEditPopup from "../component/ProjectEditPopup";
+import { SiLevelsdotfyi } from "react-icons/si";
+import SkillList from "../component/SkillList";
 
 function ProjectPage() {
     const { project, isLoading, isError, isOwner, isMember, removeParticipant} = useProjectStore();
@@ -42,7 +44,7 @@ function ProjectPage() {
                 <SideBar/>
             </div>
             <div className="w-3/4 flex flex-col items-start">
-                <div className="w-5/6 h-2/6 flex flex-col items-start justify-evenly">
+                <div className="w-5/6 h-1/3 flex flex-col items-start justify-evenly">
                     <div className="w-full flex items-center justify-between">
                         <h1 className="font-extrabold text-5xl">{project?.name}</h1>
                         <div className="w-1/2">
@@ -79,7 +81,7 @@ function ProjectPage() {
                         </div>
                     </div>
                     <div className="w-full h-1/2 flex flex-col items-start justify-evenly">
-                        <div className="w-1/2 flex items-center justify-between">
+                        <div className="w-3/4 flex items-center justify-between">
                             <div className="flex justify-center text-xl gap-2">
                                 <BsPersonFillGear className="text-3xl"/>
                                 <p className="font-light">Project owner: </p>
@@ -89,8 +91,12 @@ function ProjectPage() {
                                 <IoCalendarNumber className="text-3xl"/>
                                 <p className="font-light">{project?.startDate.toString().split("T")[0]}</p>
                             </div>
+                            <div className="flex justify-start items-center gap-2">
+                                <SiLevelsdotfyi className="text-3xl"/>
+                                <p>{project?.projectLevel || "Project Level not specified"}</p>
+                            </div>
                         </div>
-                        <div className="w-2/3 flex items-center justify-between">
+                        <div className="w-3/4 flex items-center justify-between">
                                 {project?.status ? 
                                 <div className="flex justify-center items-center gap-1">
                                     <BsCircleFill className="text-xs text-custom-green"/> 
@@ -114,6 +120,7 @@ function ProjectPage() {
                                     <p>Current team size {project?.participantsNumber}/{project?.maxParticipantsNumber}</p>
                                 </div>
                         </div>
+                        <SkillList skills={project?.skills || []} isEdit={false}/>
                     </div>
                 </div>
                 <div className=" w-2/3 flex flex-col gap-5">
