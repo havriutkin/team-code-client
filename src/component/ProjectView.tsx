@@ -2,6 +2,8 @@ import Project from "../model/Project";
 import { BsCircleFill } from "react-icons/bs";
 import { FaPeopleGroup } from "react-icons/fa6";
 import SkillList from "./SkillList";
+import { useNavigate } from "react-router-dom";
+import useProjectStore from "../store/project";
 
 interface ProjectViewProps {
     project: Project;
@@ -10,8 +12,14 @@ interface ProjectViewProps {
 
 
 function ProjectView({project, className} : ProjectViewProps) {
+    const { loadProject } = useProjectStore();
+    const navigate  = useNavigate();
+    const pickProject = (id: number)=> {
+        loadProject(id).then(() => navigate("/project"));
+    }
+
     return (
-        <div className={`h-40 ${className}`}>
+        <div className={`h-40 ${className}`}  onClick={() => {pickProject(project.id)}}>
             <div className="bg-custom-blue min-w-1/4 w-fit h-1/4 px-3 flex flex-col justify-center items-center rounded-tl-md rounded-br-lg">
                 <p className="text-xl font-bold cursor-pointer">{project.name}</p>
             </div>

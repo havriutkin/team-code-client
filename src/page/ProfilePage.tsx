@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import useUserStore from "../store/user";
 import SideBar from "../component/Sidebar";
 import { BsPersonCircle } from "react-icons/bs";
@@ -7,51 +7,46 @@ import { MdEmail } from "react-icons/md";
 import { FaGithub } from "react-icons/fa";
 import { SiLevelsdotfyi } from "react-icons/si";
 import LoadingPage from "./LoadingPage";
-import ErrorPage from "./ErrorPage";
-import useAuthStore from "../store/auth";
 import Button from "../component/Button";
-import ProfileEditForm from "../component/ProfileEditPopup";
+import ProfileEditForm from "../popup/ProfileEditPopup";
 import { motion } from "framer-motion";
 import SkillList from "../component/SkillList"; 
 import ProjectList from "../component/ProjectList";
 import useProjectStore from "../store/project";
+import useAuthStore from "../store/auth";
+import NewUserPopup from "../popup/NewUserPopup";
+import ErrorPage from "./ErrorPage";
 
 // TODO: Add LogOut Button
 
 function Profile(){
     const location = useLocation();
-    const { email, newUserTip } = location.state;
-    const { user, loadUser, isLoading, isError} = useUserStore();
-    const [isOwner, setIsOwner] = useState(false);
-    const [ isEditing, setIsEditing ] = useState(false);
-    const { fetchPrincipal } = useAuthStore();
+    const { newUserTip } = location.state ? location.state as { newUserTip: boolean } : { newUserTip: false };
+    const [ isTipDisplayed, setIsTipDisplayed ] = useState<boolean>(newUserTip || false);
+    const { logout } = useAuthStore();
+    const { user, isLoading, isError, isOwner } = useUserStore();
     const { projects, loadProjectsByUserId } = useProjectStore();
+    const [ isEditing, setIsEditing ] = useState(false);
+    const navigate = useNavigate();
+
+    const handleLogOut = () => {
+        logout();
+        navigate('/');
+    }
 
     useEffect(() => {
-        if (email) {
-            fetchPrincipal().then((principal) => {
-                if (!principal) {
-                    return;
-                }
-                
-                loadUser(email).then(() => {
-                    if(user.id === principal?.id) {
-                        setIsOwner(true);
-                    } else {
-                        setIsOwner(false)
-                    }
-                    loadProjectsByUserId(user.id);
-                });
-                
-            });
+        if (!user) {
+            navigate('/');
+            return;
         }
-    }, [email, loadUser, fetchPrincipal, user.id, loadProjectsByUserId]);
+        loadProjectsByUserId(user.id);
+    }, [user, loadProjectsByUserId, navigate]);
 
     const onEditFormSave = () => {
         setIsEditing(false);
     }
 
-    if (isLoading) {
+    if (isLoading || !user) {
         return <LoadingPage/>;
     }
 
@@ -75,12 +70,16 @@ function Profile(){
                     </div>
 
                     <div className="w-5/6 h-full flex flex-col justify-between items-start gap-3">
-                        <div className="flex justify-stretch gap-10 items-center">
+                        <div className="w-3/4 flex justify-between items-center">
                             <h1 className="font-extrabold text-6xl">{user.name}</h1>
                             {isOwner && <Button text="Edit" 
-                                            className="w-24 h-3/4 rounded-lg text-2xl bg-custom-blue transition-all 
+                                            className="w-24 h-3/4 rounded-lg text-xl bg-custom-blue transition-all 
                                                         hover:scale-105 active:scale-95" 
                                             onClick={() => setIsEditing(true)}/>}
+                            {isOwner && <Button text="Log Out" 
+                                            className="w-24 h-3/4 rounded-lg text-xl bg-custom-blue transition-all 
+                                            hover:scale-105 active:scale-95" 
+                                            onClick={handleLogOut}/>}
                         </div>
                         <div className="w-full flex justify-between my-2">
                             <div className="w-1/3 flex justify-start items-center gap-2">
@@ -108,11 +107,11 @@ function Profile(){
                     <div className="w-full h-auto min-h-20 flex flex-col">
                         <h2 className="font-bold text-3xl mb-5">Recent Projects</h2>
                         <div>
-                            <ProjectList projects={projects} className="flex h-auto mb-5"/>
+                            <ProjectList projects={projects.slice(0, 3)} className="flex h-auto mb-5"/>
                         </div>
                     </div>
                 </div>
-                {newUserTip && <p>Welcome to TeamCode! We're excited to have you on board.</p>}
+                {isTipDisplayed && <NewUserPopup onClose={() => setIsTipDisplayed(false)} />}
                 {isEditing && <ProfileEditForm onClose={() => setIsEditing(false)} onSave={onEditFormSave}/>}
             </motion.div>
         </div>

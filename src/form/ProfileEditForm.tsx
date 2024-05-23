@@ -1,9 +1,10 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState } from "react";
-import Button from "./Button";
+import Button from "../component/Button";
 import useUserStore from "../store/user";
-import SkillList from "./SkillList";
+import SkillList from "../component/SkillList";
 import Skill from "../model/SkillModel";
+import ErrorPage from "../page/ErrorPage";
 
 enum Experience {
     BEGINNER = "BEGINNER",
@@ -43,6 +44,10 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
     const onAddSkill = (skills: Skill[]) => {
         setSkillsToAdd((prev: Skill[]) => [...prev, ...skills]);
     };
+
+    if (!user) {
+        return <ErrorPage/>;
+    }
 
     return (
         <form className="w-full h-full flex flex-col justify-around items-start font-semibold">
@@ -106,7 +111,7 @@ function ProfileEditForm({ onClose, onSave }: ProfileEditFormProps){
                     <div className="w-full flex justify-start items-start">
                         <p className="w-1/4 text-xl">Skills:</p>
                         <SkillList className="" skills={[...user.skills, ...skillsToAdd]} isEdit={true} 
-                                    onDelete={onDeleteSkill} onAdd={onAddSkill} elementsStyle="flex-wrap justify-stretch"/>
+                                    onDelete={onDeleteSkill} onAdd={onAddSkill}/>
                     </div>
                 </div>
 

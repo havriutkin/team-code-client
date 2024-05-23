@@ -1,4 +1,4 @@
-import ProfileEditForm from "./ProfileEditForm";
+import ProfileEditForm from "../form/ProfileEditForm";
 import { motion, AnimatePresence } from "framer-motion";
 import useUserStore from "../store/user";
 import User from "../model/UserModel";
@@ -15,7 +15,6 @@ type ProfileEditFormInput = {
     github: string;
     experience: Experience;
     bio: string;
-    // skills: string[];
 }
 
 
@@ -25,9 +24,13 @@ interface ProfileEditPopupProps {
 }
 
 function ProfileEditPopup({ onClose, onSave }: ProfileEditPopupProps) {
-    const {user, updateUser, addSkills, removeSkills} = useUserStore();
+    const {user, updateUser, addSkills, removeSkills, loadUser} = useUserStore();
 
     const handleSave = async (data: ProfileEditFormInput, skillsToAdd: number[], skillsToDelete: number[]) => {
+        if (!user) {
+            return;
+        }
+
         const userData: User = {
             id: user.id,
             name: data.username,
@@ -47,6 +50,8 @@ function ProfileEditPopup({ onClose, onSave }: ProfileEditPopupProps) {
         if (skillsToDelete.length !== 0) {
             await removeSkills(skillsToDelete);
         }
+
+        await loadUser(user.email);  // Reload user to get the updated data
 
         onSave();
     }

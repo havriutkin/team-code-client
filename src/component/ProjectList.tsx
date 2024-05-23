@@ -7,6 +7,7 @@ interface ProjectListProps {
 }
 
 function ProjectList({ projects, className}: ProjectListProps ) {
+
     return(
         <div className={`${className}`}>
             { projects && projects.length > 0 ?

@@ -1,30 +1,40 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import axios, { AxiosRequestConfig } from "axios";
 import useAuthStore from "./auth";
 import User from "../model/UserModel";
-import Project from "../model/Project";
 
 const ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
 interface UserState {
-    user: User;
+    user: User | null;
+    users: User[];
+    isOwner: boolean;
     isLoading: boolean;
     isError: boolean;
 }
 
 interface UserActions {
     loadUser: (email: string) => Promise<void>;
-    updateUser: (data: User) => Promise<void>; 
+    loadProjectMembers: (projectId: number) => Promise<void>;
+    updateUser: (data: User) => Promise<void>;
     addSkills: (skillIds: number[]) => Promise<void>;
     removeSkills: (skillIds: number[]) => Promise<void>;
 }
 
+type State = UserState & UserActions;
+
 const fetchUser = async (email: string): Promise<User> => {
     const token = useAuthStore.getState().token;
+
+    if (!token) {
+        throw new Error("No token found");
+    }
+
     const response = await axios.get(`${ENDPOINT}/user/email/${email}`, {
         headers: {
-            Authorization: `Bearer ${token}`
-        }
+            Authorization: `Bearer ${token}`,
+        },
     });
 
     if (response.status === 200) {
@@ -32,13 +42,33 @@ const fetchUser = async (email: string): Promise<User> => {
     } else {
         throw new Error("Error fetching user");
     }
+};
+
+const fetchProjectMembers = async (projectId: number): Promise<User[]> => {
+    const token = useAuthStore.getState().token;
+
+    if (!token) {
+        throw new Error("No token found");
+    }
+
+    const response = await axios.get(`${ENDPOINT}/user/project/${projectId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (response.status === 200) {
+        return response.data as User[];
+    } else {
+        throw new Error("Error fetching project members");
+    }
 }
 
 const updateUser = async (data: User, token: string): Promise<User> => {
     const response = await axios.put(`${ENDPOINT}/user/${useAuthStore.getState().principal?.id}`, data, {
         headers: {
-            Authorization: `Bearer ${token}`
-        }
+            Authorization: `Bearer ${token}`,
+        },
     });
     if (response.status === 200) {
         return response.data as User;
@@ -50,8 +80,8 @@ const updateUser = async (data: User, token: string): Promise<User> => {
 const postSkills = async (userId: number, skillIds: number[], token: string): Promise<void> => {
     const response = await axios.post(`${ENDPOINT}/user/${userId}/skills`, skillIds, {
         headers: {
-            Authorization: `Bearer ${token}`
-        }
+            Authorization: `Bearer ${token}`,
+        },
     });
 
     if (response.status !== 200) {
@@ -62,104 +92,120 @@ const postSkills = async (userId: number, skillIds: number[], token: string): Pr
 };
 
 const deleteSkills = async (userId: number, skillIds: number[], token: string): Promise<void> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
         },
-        data: skillIds
+        data: skillIds,
     };
 
-    console.log("Request config:", requestConfig);
-
-    const response = await axios.delete(`${ENDPOINT}/user/${userId}/skills`, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        },
-        data: skillIds
-    });
+    const response = await axios.delete(`${ENDPOINT}/user/${userId}/skills`, requestConfig);
 
     if (response.status !== 200) {
         throw new Error("Error removing skill");
     }
 
     return;
-}
+};
 
+/*
+TODO: Move isOwner and isMember functionality to useEffect inside components
+*/
 
-const useUserStore = create<UserState & UserActions>((set) => ({
-    user: {} as User,
-    isLoading: false,
-    isError: false,
+const useUserStore = create<State>()(
+    persist(
+        (set) => ({
+            user: null,
+            users: [] as User[],
+            isOwner: false,
+            isLoading: false,
+            isError: false,
 
-    loadUser: async (email: string) => {
-        set({ isError: false, isLoading: true });
+            loadUser: async (email: string) => {
+                set({ user: null, isError: false, isLoading: true, isOwner: false });
+                
+                try {
+                    const user = await fetchUser(email);
+                    const principalId = useAuthStore.getState().principal?.id;
+                    set({ user, isLoading: false, isOwner: user.id === principalId });
+                } catch (error) {
+                    set({ isError: true, isLoading: false });
+                    console.error("Error fetching user:", error);
+                }
+            },
 
-        if (!email) {
-            set({ isError: true, isLoading: false});
-            return;
-        }
-        
-        fetchUser(email).then((user) => {
-            set({ user, isLoading: false });
-        }).catch(() => {
-            set({ isError: true, isLoading: false });
-        });
-    },
+            loadProjectMembers: async (projectId: number) => {
+                set({ users: [], isError: false, isLoading: true });
 
-    updateUser: async (data: User) => {
-        set({ isError: false, isLoading: true });
-    
-        const token = useAuthStore.getState().token;
+                try {
+                    const users = await fetchProjectMembers(projectId);
+                    set({ users, isLoading: false });
+                } catch (error) {
+                    set({ users: [], isLoading: false });
+                    console.error("Error fetching project members:", error);
+                }
+            },
 
-        try {
-            updateUser(data, token).then((user) => {
-                set({ user, isLoading: false });
-            });
-        } catch (error) {
-            set({ isError: true, isLoading: false});
-            console.error("Error updating user:", error);
-        }
-    },
-    
-    addSkills: async (skillIds: number[]) => {
-        set({ isError: false, isLoading: true });
+            updateUser: async (data: User) => {
+                set({ isError: false, isLoading: true });
 
-        const token = useAuthStore.getState().token;
-        const userId = useAuthStore.getState().principal?.id;
+                const token = useAuthStore.getState().token;
 
-        if (!userId) {
-            set({ isError: true, isLoading: false });
-            return;
-        }
+                try {
+                    const user = await updateUser(data, token);
+                    set({ user, isLoading: false });
+                } catch (error) {
+                    set({ isError: true, isLoading: false });
+                    console.error("Error updating user:", error);
+                }
+            },
 
-        try {
-            postSkills(userId, skillIds, token);
-        } catch (error) {
-            set({ isError: true, isLoading: false });
-            console.error("Error adding skill:", error);
-        }
-    },
+            addSkills: async (skillIds: number[]) => {
+                set({ isError: false, isLoading: true });
 
-    removeSkills: async (skillIds: number[]) => {
-        set({ isError: false, isLoading: true });
+                const token = useAuthStore.getState().token;
+                const userId = useAuthStore.getState().principal?.id;
 
-        const token = useAuthStore.getState().token;
-        const userId = useAuthStore.getState().principal?.id;
+                if (!userId) {
+                    set({ isError: true, isLoading: false });
+                    return;
+                }
 
-        if (!userId) {
-            set({ isError: true, isLoading: false });
-            return;
-        }
+                try {
+                    await postSkills(userId, skillIds, token);
+                    set({ isLoading: false });
+                } catch (error) {
+                    set({ isError: true, isLoading: false });
+                    console.error("Error adding skill:", error);
+                }
+            },
 
-        try {
-            console.log("Removing skills:", skillIds);
-            deleteSkills(userId, skillIds, token);
-        } catch (error) {
-            set({ isError: true, isLoading: false });
-            console.error("Error removing skill:", error);
-        }
-    }
-}));
+            removeSkills: async (skillIds: number[]) => {
+                set({ isError: false, isLoading: true });
+
+                const token = useAuthStore.getState().token;
+                const userId = useAuthStore.getState().principal?.id;
+
+                if (!userId) {
+                    set({ isError: true, isLoading: false });
+                    return;
+                }
+
+                try {
+                    await deleteSkills(userId, skillIds, token);
+                    set({ isLoading: false });
+                } catch (error) {
+                    set({ isError: true, isLoading: false });
+                    console.error("Error removing skill:", error);
+                }
+            },
+        }),
+        {
+            name: 'user-store', 
+            getStorage: () => localStorage,
+            partialize: (state) => ({ user: state.user, users: state.users, isOwner: state.isOwner }),
+        } 
+    )
+);
 
 export default useUserStore;

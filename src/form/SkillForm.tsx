@@ -1,8 +1,8 @@
-import Button from "./Button";
+import Button from "../component/Button";
 import Skill from "../model/SkillModel";
 import { useState, useEffect } from "react";
-import SearchBar from "./SearchBar";
-import useSkills from "../hooks/useSkills";
+import SearchBar from "../component/SearchBar";
+import useSkills from "../hook/useSkills";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { IoIosAddCircleOutline } from "react-icons/io";
 
@@ -38,7 +38,7 @@ function SkillForm({ className, excludedSkills, onCancel, onConfirm }: SkillForm
     }
 
     return (
-        <div className={`w-full min-h-20 z-20 flex flex-col gap-5 p-5
+        <div className={` w-96  min-h-20 z-20 flex flex-col gap-5 p-5
                         border bg-custom-dark-gray 
                         ${className}`}>
             <div>
