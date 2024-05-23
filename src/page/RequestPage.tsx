@@ -5,6 +5,8 @@ import useAuthStore from "../store/auth";
 import useProjectStore from "../store/project";
 import useRequestStore from "../store/request";
 import { useEffect } from "react";
+import LoadingPage from "./LoadingPage";
+import ErrorPage from "./ErrorPage";
 
 function RequestPage() {
     const { requests, isLoading, isError, loadRequestsByProjectId, approveRequest} = useRequestStore();
@@ -18,6 +20,14 @@ function RequestPage() {
         loadRequestsByProjectId(project.id);
         console.log(requests);
     }, requests);
+
+    if (isLoading) {
+        return <LoadingPage/>;
+    }
+
+    if (isError) {
+        return <ErrorPage/>;
+    }
 
     const filteredRequests = requests?.filter(request => request.status !== "APPROVED" && request.status !== "REJECTED");
     const sortedRequests = filteredRequests.slice().sort((a, b) => new Date(a.requestDate).getTime() - new Date(b.requestDate).getTime());

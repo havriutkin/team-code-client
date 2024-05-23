@@ -3,9 +3,7 @@ import { persist } from "zustand/middleware";
 import Project from "../model/Project";
 import useAuthStore from "./auth";
 import axios from "axios";
-import useUserStore from "./user";
-import Request
- from "../model/RequestModel";
+
 const ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
 interface ProjectState{
