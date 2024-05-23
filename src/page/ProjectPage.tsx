@@ -15,6 +15,7 @@ import ProjectEditPopup from "../popup/ProjectEditPopup";
 import { SiLevelsdotfyi } from "react-icons/si";
 import SkillList from "../component/SkillList";
 import ProjectParticipantsPopup from "../popup/ProjectParticipantsPopup";
+import useRequestStore from "../store/request";
 
 function ProjectPage() {
     const { project, isLoading, isError, isOwner, isMember, removeParticipant, loadProject} = useProjectStore();
@@ -22,6 +23,7 @@ function ProjectPage() {
     const navigate = useNavigate();
     const [isEditing, setIsEditing] = useState(false);
     const [isParticipantDisplayed, setIsParticipantDisplayed] = useState(false);
+    const { sendJoinRequest } = useRequestStore();
 
     const handleLeaveProject = async () => {
         if (!principal || !project) {
@@ -64,7 +66,7 @@ function ProjectPage() {
                                     <Button text="View Join Requests" 
                                             className="h-3/4 p-3 rounded-lg bg-custom-blue transition-all 
                                                 hover:scale-105 active:scale-95" 
-                                            onClick={()=>{}}/>
+                                            onClick={()=>{navigate("/request")}}/>
                                     <Button text="View Participants" 
                                             className="h-3/4 p-3 rounded-lg bg-custom-blue transition-all 
                                                 hover:scale-105 active:scale-95" 
@@ -84,7 +86,11 @@ function ProjectPage() {
                                         <Button text="Send Join Request" 
                                                 className="h-3/4 p-3 rounded-lg bg-custom-blue transition-all 
                                                     hover:scale-105 active:scale-95" 
-                                                onClick={()=>{}}/>
+                                                onClick={()=>{
+                                                    if(!project || !principal)
+                                                        return;
+                                                    sendJoinRequest(project?.id, principal?.id)
+                                                }}/>
                                     }    
                                 </div>
                             }
