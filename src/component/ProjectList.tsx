@@ -22,7 +22,7 @@ function ProjectList({ projects, className}: ProjectListProps ) {
                         );
                     })}
                 </ul>
-                : <p>No skills</p>
+                : <p className="w-full flex justify-center items-center">No projects</p>
             }
         </div>
     );
