@@ -3,6 +3,8 @@ import { persist } from "zustand/middleware";
 import Project from "../model/Project";
 import useAuthStore from "./auth";
 import axios from "axios";
+import ProjectFilter from "../model/ProjectFilter";
+import qs from "qs";
 
 const ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
@@ -20,12 +22,10 @@ interface ProjectActions {
     loadProjectsByUserId: (userId: number) => Promise<void>;
     loadProjectsByMemberId: (memberId: number) => Promise<void>;
     loadProjectsByOwnerId: (ownerOd: number) => Promise<void>;
-    //loadProjectsByFilter: (projectFilter: ProjectFilter) => Promise<void>
+    loadProjectsByFilter: (projectFilter: ProjectFilter) => Promise<void>
     updateProject: (data: Project) => Promise<void>; 
     addSkills: (skillIds: number[]) => Promise<void>;
     removeSkills: (skillIds: number[]) => Promise<void>;
-    //sendJoinRequest: (projectId: number) => Promise<void>;
-    //addParticipant: (userId: number) => Promise<void>;
     removeParticipants: (userId: number[]) => Promise<void>;
     removeParticipant: (userId: number) => Promise<void>;
 }
@@ -92,6 +92,25 @@ const fetchProjectsByUserId = async (userId: number): Promise<Project[]> => {
     const projectsByOwner = await fetchProjectsByOwnerId(userId);
     
     return [...projectsByOwner, ...projectsByMember];
+}
+
+const fetchProjectsByFilter = async (projectFilter: ProjectFilter): Promise<Project[]> => {
+    const token = useAuthStore.getState().token;
+    const response = await axios.get(`${ENDPOINT}/project/filter`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
+        params: projectFilter,
+        paramsSerializer: params => {
+            return qs.stringify(params, { arrayFormat: 'repeat' });
+        }
+    });
+
+    if (response.status === 200) {
+        return response.data as Project[];
+    } else {
+        throw new Error("Error fetching projects by filter");
+    }
 }
 
 const isMember = async (projectId: number, userId: number): Promise<boolean> => {
@@ -257,6 +276,20 @@ const useProjectStore = create<ProjectState & ProjectActions>()(
                 } else {
                     set({projects: []})
                 }
+            },
+
+            loadProjectsByFilter: async (projectFilter: ProjectFilter) => {
+                set({ projects: [], isLoading: true, isError: false });
+
+                try {
+                    const data = await fetchProjectsByFilter(projectFilter);
+                    set({ projects: data, isLoading: false, isError: false });
+                } catch (error) {
+                    set({ projects: [], isLoading: false, isError: false });
+                    console.error("Error loading projects by filter:", error);
+                }
+
+                console.log(`Projects: ${useProjectStore.getState().projects}`)
             },
             
             removeParticipant: async (userId: number) => {

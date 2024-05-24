@@ -71,13 +71,13 @@ function Profile(){
 
                     <div className="w-5/6 h-full flex flex-col justify-between items-start gap-3">
                         <div className="w-3/4 flex justify-between items-center">
-                            <h1 className="font-extrabold text-6xl">{user.name}</h1>
+                            <h1 className="font-extrabold text-5xl">{user.name}</h1>
                             {isOwner && <Button text="Edit" 
-                                            className="w-24 h-3/4 rounded-lg text-xl bg-custom-blue transition-all 
+                                            className="w-24 h-3/4 max-h-14 rounded-lg text-xl bg-custom-blue transition-all 
                                                         hover:scale-105 active:scale-95" 
                                             onClick={() => setIsEditing(true)}/>}
                             {isOwner && <Button text="Log Out" 
-                                            className="w-24 h-3/4 rounded-lg text-xl bg-custom-blue transition-all 
+                                            className="w-24 h-3/4 max-h-14 rounded-lg text-xl bg-custom-blue transition-all 
                                             hover:scale-105 active:scale-95" 
                                             onClick={handleLogOut}/>}
                         </div>

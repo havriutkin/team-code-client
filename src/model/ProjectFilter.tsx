@@ -1,7 +1,7 @@
 interface ProjectFilter {
-    name: string;
-    projectLevel: string;
-    skills: string[];
+    name: string | null;
+    projectLevel: string | null;
+    skills: string[] | null;
 }
 
 export default ProjectFilter;

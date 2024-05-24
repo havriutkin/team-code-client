@@ -15,12 +15,16 @@ function SearchBar({ className, onChange }: SearchBarProps) {
     }
 
     return (
-        <div className={`w-full p-2 rounded-xl flex justify-center items-center gap-3 ${className}`}>
-            <IoIosSearch className="text-2xl cursor-pointer"/>
-            <input className="w-full p-2 rounded-lg bg-custom-light-gray" type="text" 
+        <div className={`w-full rounded-xl flex justify-center items-center relative ${className}`}>
+            <IoIosSearch className="absolute left-2 text-2xl cursor-pointer"/>
+            <input 
+                className="w-full p-2 pl-10 rounded-lg bg-custom-light-gray" 
+                type="text" 
                 value={searchText}
-                onChange={handleSearch}/>
+                onChange={handleSearch}
+            />
         </div>
+
     );
 }
 

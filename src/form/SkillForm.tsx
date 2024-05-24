@@ -7,16 +7,17 @@ import { IoIosCloseCircleOutline } from "react-icons/io";
 import { IoIosAddCircleOutline } from "react-icons/io";
 
 interface SkillFormProps {
+    pinnedSkills?: Skill[];
     excludedSkills?: Skill[];
     className?: string;
     onConfirm?: (skills: Skill[]) => void;
     onCancel: () => void;
 }
 
-function SkillForm({ className, excludedSkills, onCancel, onConfirm }: SkillFormProps ) {
+function SkillForm({ className, pinnedSkills, excludedSkills, onCancel, onConfirm }: SkillFormProps ) {
     const [searchText, setSearchText] = useState("");
     const { skills, fetchSkills, setFilterTextState } = useSkills({filterText: searchText});
-    const [selectedSkills, setSelectedSkills] = useState<Skill[]>([]);
+    const [selectedSkills, setSelectedSkills] = useState<Skill[]>(pinnedSkills || []);
 
     useEffect(() => {
         setFilterTextState(searchText);
@@ -39,7 +40,7 @@ function SkillForm({ className, excludedSkills, onCancel, onConfirm }: SkillForm
 
     return (
         <div className={` w-96  min-h-20 z-20 flex flex-col gap-5 p-5
-                        border bg-custom-dark-gray 
+                        bg-custom-dark-gray 
                         ${className}`}>
             <div>
                 <SearchBar className="w-2/3 max-h-10 bg-custom-light-gray" onChange={setSearchText}/>
