@@ -21,6 +21,7 @@ interface RequestActions{
     approveRequest: (request: Request) => Promise<void>;
     rejectRequest: (Request: Request) => Promise<void>;
     sendJoinRequest: (projectId: number, userId: number) => Promise<void>;
+    isRequestExists: (projectId: number, userId: number) => Promise<boolean>;
 }
 
 const fetchReuests = async (projectId: number): Promise<Request[]> => {
@@ -136,6 +137,26 @@ const useRequestStore = create<RequestState & RequestActions>()(
                     set({ isLoading: false, isError: true });
                     throw new Error("Error sending join request");
                 }
+            },
+
+            isRequestExists: async (projectId: number, userId: number) => {
+                set({ isLoading: true, isError: false})
+                const token = useAuthStore.getState().token;
+                const response = await axios.get(`${ENDPOINT}/request/isExists`, {
+                    headers:{
+                        Authorization: `Bearer ${token}`
+                    },
+                    params: {
+                        projectId: projectId,
+                        userId: userId
+                    }
+                })
+                if (response.status === 200) {
+                    set({ isLoading:false , isError: false })
+                } else {
+                    set({ isLoading:false , isError: true})
+                }
+                return response.data;
             }
         }),
         {

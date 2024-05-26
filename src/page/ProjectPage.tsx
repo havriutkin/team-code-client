@@ -23,7 +23,8 @@ function ProjectPage() {
     const navigate = useNavigate();
     const [isEditing, setIsEditing] = useState(false);
     const [isParticipantDisplayed, setIsParticipantDisplayed] = useState(false);
-    const { sendJoinRequest } = useRequestStore();
+    const { sendJoinRequest, isRequestExists } = useRequestStore();
+    const [isRequestSended, setIsRequestSended] = useState(false);
 
     const handleLeaveProject = async () => {
         if (!principal || !project) {
@@ -40,6 +41,12 @@ function ProjectPage() {
         }
 
         loadProject(project.id);
+        if(!principal) {
+            setIsRequestSended(false);
+            return;
+        } else {
+            isRequestExists(project.id, principal.id).then((isRequestSended) => {setIsRequestSended(isRequestSended)});
+        }
     }, []);
 
     if (isLoading) {
@@ -83,14 +90,17 @@ function ProjectPage() {
                                                     hover:scale-105 active:scale-95" 
                                                 onClick={handleLeaveProject}/>
                                         :
-                                        <Button text="Send Join Request" 
+                                        !isRequestSended &&
+                                            <Button text="Send Join Request" 
                                                 className="h-3/4 p-3 rounded-lg bg-custom-blue transition-all 
                                                     hover:scale-105 active:scale-95" 
                                                 onClick={()=>{
                                                     if(!project || !principal)
                                                         return;
-                                                    sendJoinRequest(project?.id, principal?.id)
+                                                    sendJoinRequest(project?.id, principal?.id);
+                                                    setIsRequestSended(true);
                                                 }}/>
+                                        
                                     }    
                                 </div>
                             }
