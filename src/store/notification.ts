@@ -2,7 +2,6 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import useAuthStore from "./auth";
 import axios from "axios";
-import qs from "qs";
 import Notification from "../model/Notification";
 
 const ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
@@ -21,7 +20,7 @@ interface NotificationActions {
 
 const fetchNotifications = async (userId: number) => {
     const token = useAuthStore.getState().token;
-    const response = await axios.get(`${ENDPOINT}/notification?${qs.stringify({ userId })}`, {
+    const response = await axios.get(`${ENDPOINT}/notification/${userId}`, {
         headers: {
             Authorization: `Bearer ${token}`
         }
@@ -82,7 +81,7 @@ const useNotificationStore = create<NotificationState & NotificationActions>()(
                     if (!principal) {
                         throw new Error("User not authenticated");
                     }
-                    
+
                     const notifications = await fetchNotifications(principal.id);
                     set({ notifications, isLoading: false });
                 } catch (error) {

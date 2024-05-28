@@ -9,6 +9,8 @@ import useAuthStore from "../store/auth";
 import useUserStore from "../store/user";
 import useProjectStore from "../store/project";
 import ProjectFilter from "../model/ProjectFilter";
+import { useState } from "react";
+import NotificationsPopup from "../popup/NotificationsPopup";
 
 /*
 TODO: fix navigating to profile page
@@ -19,6 +21,7 @@ function SideBar() {
     const navigate = useNavigate();
     const { loadUser } = useUserStore();
     const { loadProjectsByUserId, loadProjectsByFilter } = useProjectStore();
+    const [isNotificationsDisplayed, setIsNotificationsDisplayed] = useState<boolean>(false);
 
     const handleProfileClick = async () => {
         if (!principal) return;
@@ -45,6 +48,10 @@ function SideBar() {
         navigate("/search");
     }
 
+    const handleNotificationsClick = () => {
+        setIsNotificationsDisplayed(!isNotificationsDisplayed);
+    }
+
     return (
         <motion.div 
             initial={{ x: -100, opacity: 0 }}
@@ -57,7 +64,8 @@ function SideBar() {
                                                             onClick={() => {navigate('/')}}/>
             </div>
             <div className="w-full h-4/6 flex flex-col justify-end items-center">
-                <IoIosNotificationsOutline className="m-5 text-4xl hover:scale-110"/>
+                <IoIosNotificationsOutline className="m-5 text-4xl hover:scale-110"
+                            onClick={handleNotificationsClick}/>
                 <GoProjectRoadmap className="m-5 text-4xl hover:scale-110"
                             onClick={handleProjectsClick}/>
                 <CiSearch className="m-5 text-4xl hover:scale-110" 
@@ -66,6 +74,8 @@ function SideBar() {
             <div className="w-full h-1/6 border-t-2 border-white flex justify-center items-center">
                 <BsPersonCircle className="text-6xl" onClick={handleProfileClick}/>
             </div>
+
+            {isNotificationsDisplayed && <NotificationsPopup/>}
         </motion.div>
     );
 }
