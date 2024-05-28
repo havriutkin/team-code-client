@@ -43,7 +43,7 @@ function ProjectView({project, className} : ProjectViewProps) {
                     
                     <div className="flex items-center gap-1">
                         <FaPeopleGroup/>
-                        <p>{project.participantsNumber}</p>
+                        <p>{project.participantsNumber}/{project.maxParticipantsNumber}</p>
                     </div>
                 </div>
             </div>

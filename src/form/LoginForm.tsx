@@ -27,7 +27,7 @@ function LoginForm() {
 
     return (
         <form className="w-full h-full flex flex-col justify-around items-center">
-            <div className="flex flex-col gap-2">
+            <div className="w-1/3 flex flex-col gap-2">
                 <label htmlFor="email">Email:</label>
                 <input className="text-black p-2 rounded-lg" type="email" 
                     {...register('email', {required: true, pattern: /^\S+@\S+\.\S+$/i})} />
@@ -35,7 +35,7 @@ function LoginForm() {
                 {errors.email?.type === 'pattern' && <span className="text-red-500">Email is not valid</span>}
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="w-1/3 flex flex-col gap-2">
                 <label>Password:</label>
                 <input className="text-black p-2 rounded-lg" type="password" 
                     {...register('password', {required: true, minLength: 4})} />

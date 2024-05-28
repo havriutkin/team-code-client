@@ -13,9 +13,9 @@ function newUserPopup({ onClose }: NewUserPopupProps) {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
-                className="w-3/4 h-5/6 bg-custom-light-gray 
+                className="w-1/2 h-1/2 bg-custom-light-gray 
                         fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                        text-white z-10
+                        text-white z-30
                         flex flex-col justify-around items-center rounded-2xl">
                 <p className=" text-4xl font-extrabold">Welcome to TeamCode!</p>
                 <div className="text-2xl text-center">

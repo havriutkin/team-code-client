@@ -57,7 +57,7 @@ function SideBar() {
             initial={{ x: -100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="w-1/12 h-screen left-0 fixed bg-custom-light-gray rounded-r-3xl">
+            className="z-10 w-1/12 h-screen left-0 fixed bg-custom-light-gray rounded-r-3xl">
             <div className="w-full h-1/6 bg-custom-blue flex justify-center items-center 
                             rounded-tr-3xl">
                 <img src={TeamCodeLogo} alt="TeamCodeLogo" className="w-1/2 h-1/2 transition-all hover:scale-110 active:scale-90"
@@ -72,7 +72,7 @@ function SideBar() {
                             onClick={handleSearchClick}/>
             </div>
             <div className="w-full h-1/6 border-t-2 border-white flex justify-center items-center">
-                <BsPersonCircle className="text-6xl" onClick={handleProfileClick}/>
+                <BsPersonCircle className="text-6xl transition-all hover:scale-110" onClick={handleProfileClick}/>
             </div>
 
             {isNotificationsDisplayed && <NotificationsPopup/>}
