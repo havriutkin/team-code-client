@@ -17,6 +17,7 @@ import SkillList from "../component/SkillList";
 import ProjectParticipantsPopup from "../popup/ProjectParticipantsPopup";
 import useRequestStore from "../store/request";
 import useUserStore from "../store/user";
+import SuccessPopup from "../popup/SuccessPopup";
 
 function ProjectPage() {
     const { project, isLoading, isError, isOwner, isMember, removeParticipant, loadProject} = useProjectStore();
@@ -27,6 +28,7 @@ function ProjectPage() {
     const [isParticipantDisplayed, setIsParticipantDisplayed] = useState(false);
     const { sendJoinRequest, isRequestExists } = useRequestStore();
     const [isRequestSended, setIsRequestSended] = useState(false);
+    const [isSuccessMessageDisplayed, setIsSuccessMessageDisplayed] = useState(false);
 
     const handleLeaveProject = async () => {
         if (!principal || !project) {
@@ -44,6 +46,16 @@ function ProjectPage() {
 
         await loadUser(project?.owner.email);
         navigate("/profile");
+    }
+
+    const handleSendJoinRequest = async () => {
+        if (!project || !principal) {
+            return;
+        }
+
+        await sendJoinRequest(project.id, principal.id);
+        setIsRequestSended(true);
+        setIsSuccessMessageDisplayed(true);
     }
 
     useEffect(() => {
@@ -108,12 +120,7 @@ function ProjectPage() {
                                             <Button text="Send Join Request" 
                                                 className="h-3/4 p-3 rounded-lg bg-custom-blue transition-all 
                                                     hover:scale-105 active:scale-95" 
-                                                onClick={()=>{
-                                                    if(!project || !principal)
-                                                        return;
-                                                    sendJoinRequest(project?.id, principal?.id);
-                                                    setIsRequestSended(true);
-                                                }}/>
+                                                onClick={handleSendJoinRequest}/>
                                         
                                     }    
                                 </div>
@@ -175,6 +182,7 @@ function ProjectPage() {
             {isEditing && <ProjectEditPopup onClose={()=>{setIsEditing(false)}} 
                                             onSave={() => {setIsEditing(false)}}/>}
             {isParticipantDisplayed && <ProjectParticipantsPopup onClose={()=>{setIsParticipantDisplayed(false)}}/>}
+            {isSuccessMessageDisplayed && <SuccessPopup onClose={() => {setIsSuccessMessageDisplayed(false)} }/>}
         </div>
     );
 }

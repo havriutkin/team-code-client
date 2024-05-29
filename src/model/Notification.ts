@@ -1,7 +1,7 @@
 interface Notification {
     id: number;
     message: string;
-    isViewed: boolean;
+    viewed: boolean;
     creationDate: Date;
 }
 

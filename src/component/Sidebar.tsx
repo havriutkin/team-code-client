@@ -9,8 +9,9 @@ import useAuthStore from "../store/auth";
 import useUserStore from "../store/user";
 import useProjectStore from "../store/project";
 import ProjectFilter from "../model/ProjectFilter";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NotificationsPopup from "../popup/NotificationsPopup";
+import useNotificationStore from "../store/notification";
 
 /*
 TODO: fix navigating to profile page
@@ -22,6 +23,7 @@ function SideBar() {
     const { loadUser } = useUserStore();
     const { loadProjectsByUserId, loadProjectsByFilter } = useProjectStore();
     const [isNotificationsDisplayed, setIsNotificationsDisplayed] = useState<boolean>(false);
+    const { notifications, loadNotifications } = useNotificationStore();
 
     const handleProfileClick = async () => {
         if (!principal) return;
@@ -52,6 +54,10 @@ function SideBar() {
         setIsNotificationsDisplayed(!isNotificationsDisplayed);
     }
 
+    useEffect(() => {
+        loadNotifications();
+    }, []);
+
     return (
         <motion.div 
             initial={{ x: -100, opacity: 0 }}
@@ -64,8 +70,16 @@ function SideBar() {
                                                             onClick={() => {navigate('/')}}/>
             </div>
             <div className="w-full h-4/6 flex flex-col justify-end items-center">
-                <IoIosNotificationsOutline className="m-5 text-4xl hover:scale-110"
-                            onClick={handleNotificationsClick}/>
+                <div className="m-5 relative hover:scale-110">
+                    <IoIosNotificationsOutline className="text-4xl"
+                                onClick={handleNotificationsClick}/>
+                    {
+                        notifications.some(notification => !notification.viewed) &&
+                        <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex justify-center items-center">
+                            {notifications.filter(notification => !notification.viewed).length}
+                        </div>
+                    }
+                </div>
                 <GoProjectRoadmap className="m-5 text-4xl hover:scale-110"
                             onClick={handleProjectsClick}/>
                 <CiSearch className="m-5 text-4xl hover:scale-110" 
@@ -75,7 +89,7 @@ function SideBar() {
                 <BsPersonCircle className="text-6xl transition-all hover:scale-110" onClick={handleProfileClick}/>
             </div>
 
-            {isNotificationsDisplayed && <NotificationsPopup/>}
+            {isNotificationsDisplayed && <NotificationsPopup onClose={() => setIsNotificationsDisplayed(false)}/>}
         </motion.div>
     );
 }

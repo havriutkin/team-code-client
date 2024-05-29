@@ -13,9 +13,9 @@ interface NotificationState {
 }
 
 interface NotificationActions {
-    loadNotifications: () => void;
-    markAsViewed: (id: number) => void;
-    deleteNotification: (id: number) => void;
+    loadNotifications: () => Promise<void>;
+    markAsViewed: (id: number) => Promise<void>;
+    deleteNotification: (id: number) => Promise<void>;
 }
 
 const fetchNotifications = async (userId: number) => {
@@ -36,7 +36,7 @@ const fetchNotifications = async (userId: number) => {
 const markViewed = async (notification: Notification) => {
     const token = useAuthStore.getState().token;
 
-    notification.isViewed = true;
+    notification.viewed = true;
 
     const response = await axios.put(`${ENDPOINT}/notification/${notification.id}`, notification, {
         headers: {
@@ -48,6 +48,7 @@ const markViewed = async (notification: Notification) => {
         throw new Error("Failed to mark notification as viewed");
     }
 
+    //console.log(response.data);
     return response.data as Notification;
 }
 
@@ -98,7 +99,6 @@ const useNotificationStore = create<NotificationState & NotificationActions>()(
                     }
 
                     await markViewed(notification);
-                    useNotificationStore.setState({ notifications: useNotificationStore.getState().notifications.map(n => n.id === id ? { ...n, isViewed: true } : n) });
                 } catch (error) {
                     console.error(error);
                 }

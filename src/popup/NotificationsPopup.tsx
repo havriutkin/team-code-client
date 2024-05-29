@@ -1,10 +1,16 @@
 import { motion, AnimatePresence } from "framer-motion";
 import useNotificationStore from "../store/notification";
 import { useEffect } from "react";
+import NotificationList from "../component/NotificationList";
+import Button from "../component/Button";
+import Loading from "../component/Loading";
 
+interface NotificationsPopupProps {
+    onClose: () => void;
+}
 
-function NotificationsPopup() {
-    const { notifications, loadNotifications } = useNotificationStore();
+function NotificationsPopup({ onClose }: NotificationsPopupProps) {
+    const { notifications, loadNotifications, isLoading } = useNotificationStore();
 
     useEffect(() => {
         loadNotifications();
@@ -25,13 +31,25 @@ function NotificationsPopup() {
                     <h1 className="font-bold text-4xl mx-5">Notifications</h1>
                     <hr className="w-full border-1 border-white my-5"/>
                 </div>
+                {
+                    isLoading ?
+                    <div className="w-full h-full flex justify-center items-center">
+                        <Loading size="xl"/>
+                    </div>
+                    :
+                    <>
 
-                <div className="w-full h-full px-5">
-                    {notifications.map(notification => (
-                        notification.message
-                    ))}
-                </div>
+                        <div className="w-full h-full px-5 overflow-y-scroll scrollbar-thin">
+                            <NotificationList notifications={notifications}/>
+                        </div>
 
+                        <div className="w-full justify-center items-center p-5">
+                            <Button text="Close" className="w-1/12 rounded-md h-10 bg-custom-blue text-white
+                                                hover:scale-105 active:scale-95 transition-all" 
+                                onClick={onClose}/>
+                        </div>
+                    </>
+                }   
             </motion.div>
         </AnimatePresence>
     );
