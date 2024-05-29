@@ -18,6 +18,7 @@ import ProjectParticipantsPopup from "../popup/ProjectParticipantsPopup";
 import useRequestStore from "../store/request";
 import useUserStore from "../store/user";
 import SuccessPopup from "../popup/SuccessPopup";
+import GirlImage from "../../public/AnimeGirl.png";
 
 function ProjectPage() {
     const { project, isLoading, isError, isOwner, isMember, removeParticipant, loadProject} = useProjectStore();
@@ -84,7 +85,8 @@ function ProjectPage() {
     }
 
     return (
-        <div className="w-screen h-screen overflow-y-scroll scrollbar-thin scrollbar-track-custom-blue bg-dark-bg font-sans text-white flex justify-center">
+        <div className="w-screen h-screen overflow-y-scroll scrollbar-thin scrollbar-track-custom-blue 
+                    bg-dark-bg font-sans text-white flex justify-center relative">
             <div className="w-1/12">
                 <SideBar/>
             </div>
@@ -110,13 +112,13 @@ function ProjectPage() {
                                 :
                                 <div>
                                     {
-                                        isMember ? 
+                                        isMember && project?.status ? 
                                         <Button text="Leave Project" 
                                                 className="h-3/4 p-3 rounded-lg bg-custom-blue transition-all 
                                                     hover:scale-105 active:scale-95" 
                                                 onClick={handleLeaveProject}/>
                                         :
-                                        !isRequestSended &&
+                                        !isRequestSended && project?.status &&
                                             <Button text="Send Join Request" 
                                                 className="h-3/4 p-3 rounded-lg bg-custom-blue transition-all 
                                                     hover:scale-105 active:scale-95" 
@@ -179,6 +181,7 @@ function ProjectPage() {
                     <p>{project?.description}</p>
                 </div>
             </div>
+            <img src={GirlImage} width={300} className="absolute bottom-0 right-20"></img>
             {isEditing && <ProjectEditPopup onClose={()=>{setIsEditing(false)}} 
                                             onSave={() => {setIsEditing(false)}}/>}
             {isParticipantDisplayed && <ProjectParticipantsPopup onClose={()=>{setIsParticipantDisplayed(false)}}/>}

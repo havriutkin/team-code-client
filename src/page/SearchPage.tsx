@@ -73,7 +73,7 @@ function SearchPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                className="w-3/4 h-full py-5 flex flex-col justify-start items-start gap-10">
+                className="w-3/4 h-full py-5 flex flex-col justify-start items-start gap-10 relative">
                 <h1 className="text-4xl font-extrabold mb-5">Search for projects</h1>
 
                 <div className="w-1/2 h-1/4 flex flex-col justify-around">
@@ -138,7 +138,6 @@ function SearchPage() {
                         
                     </div>
                 </div>
-
                 <div className="w-full h-full min-h-96">
                     {
                         isLoading ? <Loading size="6xl" /> :
