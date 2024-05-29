@@ -2,6 +2,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Button from "../component/Button";
 import useAuthStore from "../store/auth";
 import { useNavigate } from "react-router-dom";
+import useUserStore from "../store/user";
 
 type LoginFormInput = {
     email: string;
@@ -11,17 +12,22 @@ type LoginFormInput = {
 function LoginForm() {
     const { register, formState: {errors}, handleSubmit } = useForm<LoginFormInput>();
     const { login, isLoading } = useAuthStore();
+    const { loadUser } = useUserStore();
     const navigate = useNavigate();
 
-    const onSubmit: SubmitHandler<LoginFormInput> = (data) => {
-        login(data.email, data.password).then(() => {
+    const onSubmit: SubmitHandler<LoginFormInput> = async (data) => {
+        try {
+            await login(data.email, data.password);
+            await loadUser(data.email);
             navigate('/profile');
-        });
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     return (
         <form className="w-full h-full flex flex-col justify-around items-center">
-            <div className="flex flex-col gap-2">
+            <div className="w-1/3 flex flex-col gap-2">
                 <label htmlFor="email">Email:</label>
                 <input className="text-black p-2 rounded-lg" type="email" 
                     {...register('email', {required: true, pattern: /^\S+@\S+\.\S+$/i})} />
@@ -29,7 +35,7 @@ function LoginForm() {
                 {errors.email?.type === 'pattern' && <span className="text-red-500">Email is not valid</span>}
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="w-1/3 flex flex-col gap-2">
                 <label>Password:</label>
                 <input className="text-black p-2 rounded-lg" type="password" 
                     {...register('password', {required: true, minLength: 4})} />
@@ -37,8 +43,9 @@ function LoginForm() {
                 {errors.password?.type === 'minLength' && <span className="text-red-500">Password is too short</span>}
             </div>
 
-            <Button text={`${isLoading ? "Loading" : "Login"}`}
+            <Button text="Login"
                     isDisabled={isLoading} 
+                    isLoading={isLoading}
                     onClick={handleSubmit(onSubmit)} 
                     className="bg-custom-green text-3xl p-3 font-semibold rounded-lg hover:scale-105 active:scale-95" />
         </form>

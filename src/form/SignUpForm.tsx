@@ -2,6 +2,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Button from "../component/Button";
 import useAuthStore from "../store/auth";
 import { useNavigate } from "react-router-dom";
+import useUserStore from "../store/user";
 
 type SignUpFormInputs = {
     username: string;
@@ -12,17 +13,22 @@ type SignUpFormInputs = {
 function SignUpForm() {
     const { register, formState: {errors}, handleSubmit } = useForm<SignUpFormInputs>();
     const { register: signUp, isLoading } = useAuthStore();
+    const { loadUser } = useUserStore();
     const navigate = useNavigate();
 
-    const onSubmit: SubmitHandler<SignUpFormInputs> = (data) => {
-        signUp(data.username, data.email, data.password).then(() => {
-            navigate('/profile');
-        });
+    const onSubmit: SubmitHandler<SignUpFormInputs> = async (data) => {
+        try {
+            await signUp(data.username, data.email, data.password);
+            await loadUser(data.email);
+            navigate('/profile', { state: { newUserTip: true } });
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     return (
         <form className="w-full h-full flex flex-col justify-around items-center">
-            <div className="flex flex-col gap-2">
+            <div className="w-1/3 flex flex-col gap-2">
                 <label>Username:</label>
                 <input className="text-black p-2 rounded-lg" 
                         {...register('username', { required: true, maxLength: 20, minLength: 5})} />
@@ -32,7 +38,7 @@ function SignUpForm() {
             </div>
 
 
-            <div className="flex flex-col gap-2">
+            <div className="w-1/3 flex flex-col gap-2">
                 <label htmlFor="email">Email:</label>
                 <input className="text-black p-2 rounded-lg" type="email" 
                     {...register('email', {required: true, pattern: /^\S+@\S+\.\S+$/i})} />
@@ -40,7 +46,7 @@ function SignUpForm() {
                 {errors.email?.type === 'pattern' && <span className="text-red-500">Email is not valid</span>}
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="w-1/3 flex flex-col gap-2">
                 <label>Password:</label>
                 <input className="text-black p-2 rounded-lg" type="password" 
                     {...register('password', {required: true, minLength: 5})} />
@@ -48,8 +54,9 @@ function SignUpForm() {
                 {errors.password?.type === 'minLength' && <span className="text-red-500">Password is too short</span>}
             </div>
 
-            <Button text={`${isLoading ? "Loading" : "Sign Up"}`} 
+            <Button text="Sign Up"
                     isDisabled={isLoading}
+                    isLoading={isLoading}
                     onClick={handleSubmit(onSubmit)} 
                     className="bg-custom-green text-3xl p-3 font-semibold rounded-lg hover:scale-105 active:scale-95" />
         </form>
