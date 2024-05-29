@@ -10,7 +10,7 @@ type LoginFormInput = {
 }
 
 function LoginForm() {
-    const { register, formState: {errors}, handleSubmit } = useForm<LoginFormInput>();
+    const { register, formState: {errors}, handleSubmit, setError } = useForm<LoginFormInput>();
     const { login, isLoading } = useAuthStore();
     const { loadUser } = useUserStore();
     const navigate = useNavigate();
@@ -20,8 +20,9 @@ function LoginForm() {
             await login(data.email, data.password);
             await loadUser(data.email);
             navigate('/profile');
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
+            setError("password", { type: "manual", message: "Invalid email or password. Please try again" });
         }
     }
 
@@ -41,6 +42,7 @@ function LoginForm() {
                     {...register('password', {required: true, minLength: 4})} />
                 {errors.password?.type === 'required' && <span className="text-red-500">Password is required</span>}
                 {errors.password?.type === 'minLength' && <span className="text-red-500">Password is too short</span>}
+                {errors.password?.type === 'manual' && <span className="text-red-500">{errors.password.message}</span>}
             </div>
 
             <Button text="Login"

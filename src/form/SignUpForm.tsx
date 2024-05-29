@@ -19,43 +19,29 @@ function SignUpForm() {
     const { register: signUp, isLoading } = useAuthStore();
     const { loadUser } = useUserStore();
     const navigate = useNavigate();
-    const [emailExists, setEmailExists] = useState<boolean | null>(null);
-    const [usernameExists, setUsernameExists] = useState<boolean | null>(null);
+
 
     const checkEmailExists = async (email: string) => {
-        try {
-            const response = await axios.get(`${ENDPOINT}/user/exists/email/${email}`);
-            if (response.status === 200) {
-                setEmailExists(response.data);
-                if (response.data) {
-                    setError("email", { type: "manual", message: "Email is already in use" });
-                } else {
-                    clearErrors("email");
-                }
-            }
-        } catch (error) {
-            console.error("Error checking email existence", error);
+        const response = await axios.get(`${ENDPOINT}/user/exists/email/${email}`);
+        if (response.status === 200) {
+            setError("email", { type: "manual", message: "Email is already in use" });
+        } else { 
+            clearErrors("email");
         }
+
     };
 
     const checkUsernameExists = async (username: string) => {
-        try {
             const response = await axios.get(`${ENDPOINT}/user/exists/name/${username}`);
             if (response.status === 200) {
-                setEmailExists(response.data);
-                if (response.data) {
-                    setError("username", { type: "manual", message: "Username is already in use" });
-                } else {
-                    clearErrors("email");
-                }
+                setError("username", { type: "manual", message: "Username is already in use" });    
+            } else {
+                clearErrors("username");
             }
-        } catch (error) {
-            console.error("Error checking email existence", error);
-        }
+
     };
 
     const onSubmit: SubmitHandler<SignUpFormInputs> = async (data) => {
-        if (emailExists || usernameExists) return;
         try {
             await signUp(data.username, data.email, data.password);
             await loadUser(data.email);

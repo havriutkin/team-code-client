@@ -90,10 +90,10 @@ const useAuthStore = create<AuthState & AuthActions>()(
                         const token = response.data.token;
                         set({ token, isLoading: false });
                         localStorage.setItem("token", token);
-                        get().fetchPrincipal();
+                        await get().fetchPrincipal();
                     } else {
                         set({ isLoading: false, isError: true });
-                        throw new Error("Login failed");
+                        throw new Error(response.data.errorMessage || "Login failed");
                     }
                 } catch (error) {
                     console.error(error);
@@ -101,6 +101,7 @@ const useAuthStore = create<AuthState & AuthActions>()(
                     throw error;
                 }
             },
+            
             
             logout: () => {
                 set({ principal: null, token: "", isLoading: false, isError: false });
