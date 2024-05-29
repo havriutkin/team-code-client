@@ -1,7 +1,5 @@
-import axios from "axios";
 import RequestView from "../component/RequestView";
 import SideBar from "../component/Sidebar";
-import useAuthStore from "../store/auth";
 import useProjectStore from "../store/project";
 import useRequestStore from "../store/request";
 import { useEffect } from "react";
@@ -9,7 +7,7 @@ import LoadingPage from "./LoadingPage";
 import ErrorPage from "./ErrorPage";
 
 function RequestPage() {
-    const { requests, isLoading, isError, loadRequestsByProjectId, approveRequest} = useRequestStore();
+    const { requests, isLoading, isError, loadRequestsByProjectId } = useRequestStore();
     const { project } = useProjectStore();
 
     useEffect(() => {
@@ -18,8 +16,7 @@ function RequestPage() {
         }
 
         loadRequestsByProjectId(project.id);
-        console.log(requests);
-    }, requests);
+    }, [project, loadRequestsByProjectId]);
 
     if (isLoading) {
         return <LoadingPage/>;
@@ -37,11 +34,11 @@ function RequestPage() {
             <div className=" w-1/12">
                 <SideBar/>
             </div>
-            <div className="w-full h-full flex flex-col justify-start items-center ">
+            <div className="w-full h-full flex flex-col justify-start items-center p-10">
                 
-                <h3 className=" font-extrabold text-2xl">Join requests:</h3>
+                <h3 className=" font-extrabold text-3xl">Join requests:</h3>
                 {sortedRequests && sortedRequests.length > 0 ?
-                    <ul className="w-full h-full flex flex-col justify-start items-center">
+                    <ul className="w-full h-full flex flex-col justify-start items-center my-5">
                         {sortedRequests.map((request, index) => {
                             return (
                                 <li key={index} className="flex flex-col items-center w-full h-1/6 my-3">

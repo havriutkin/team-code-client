@@ -36,7 +36,6 @@ function Profile(){
 
     useEffect(() => {
         if (!user) {
-            navigate('/');
             return;
         }
         loadProjectsByUserId(user.id);
@@ -63,7 +62,7 @@ function Profile(){
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                className="w-3/4 h-full p-5 flex flex-col items-start gap-10">
+                className={`w-3/4 h-full p-5 flex flex-col items-start gap-10 ${isTipDisplayed && "blur-xl"}`}>
                 <div className="w-full flex justify-between items-center">
                     <div className="w-1/6 flex justify-start items-center">
                         <BsPersonCircle className="text-6xl"/>
@@ -111,9 +110,10 @@ function Profile(){
                         </div>
                     </div>
                 </div>
-                {isTipDisplayed && <NewUserPopup onClose={() => setIsTipDisplayed(false)} />}
-                {isEditing && <ProfileEditForm onClose={() => setIsEditing(false)} onSave={onEditFormSave}/>}
+                
             </motion.div>
+            {isTipDisplayed && <NewUserPopup onClose={() => setIsTipDisplayed(false)} />}
+            {isEditing && <ProfileEditForm onClose={() => setIsEditing(false)} onSave={onEditFormSave}/>}
         </div>
     );
 }

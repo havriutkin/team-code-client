@@ -87,7 +87,7 @@ function SearchPage() {
                         <div className="w-1/2 h-full flex items-center p-1 text-center border border-custom-light-gray cursor-pointer"
                             onClick={() => { setIsLevelsDisplayed(prev => !prev) }}>
                             <h3 className="w-11/12">{level === "" ? "Level" : level} </h3>
-                            {
+                            { 
                                 isLevelsDisplayed ? 
                                 <CiMenuBurger className="w-1/12" />
                                 : 

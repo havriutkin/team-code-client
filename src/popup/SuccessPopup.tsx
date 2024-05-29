@@ -1,11 +1,11 @@
 import { AnimatePresence, motion } from "framer-motion";
 import Button from "../component/Button";
 
-interface NewUserPopupProps {
+interface SuccessPopupProps {
     onClose: () => void;
 }
 
-function newUserPopup({ onClose }: NewUserPopupProps) {
+function SuccessPopup({ onClose }: SuccessPopupProps) {
     return (
         <AnimatePresence>
             <motion.div 
@@ -17,19 +17,15 @@ function newUserPopup({ onClose }: NewUserPopupProps) {
                         fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                         text-white z-30
                         flex flex-col justify-around items-center rounded-2xl">
-                <p className=" text-4xl font-extrabold">Welcome to TeamCode!</p>
                 <div className="text-2xl text-center">
-                    <p>
-                        Make sure to edit your info! This way it will be easier to get into a project!
-                    </p>
-                    <p>
-                        Search for projects and join them to start collaborating!
+                    <p className="text-green-600">
+                        Your join request has been sent!
                     </p>
                 </div>
-                <Button text="Got it!" onClick={onClose} className="bg-custom-blue text-xl p-3 font-semibold rounded-lg hover:scale-105 active:scale-95"/>
+                <Button text="Close" onClick={onClose} className="bg-custom-blue text-xl p-3 font-semibold rounded-lg hover:scale-105 active:scale-95"/>
             </motion.div>
         </AnimatePresence>
     );
 }
 
-export default newUserPopup;
+export default SuccessPopup;

@@ -80,7 +80,7 @@ function ProjectParticipantsPopup({ onClose }: ProjectParticipantsPopupProps) {
                 transition={{ duration: 0.5 }}
                 className="w-3/4 h-5/6 bg-custom-light-gray 
                         fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                        text-white z-10
+                        text-white z-30
                         flex flex-col justify-between items-center rounded-2xl p-3">
                 <div className="w-full mt-5">
                     <h1 className="font-bold text-4xl mx-5">{project?.name} Participants</h1>

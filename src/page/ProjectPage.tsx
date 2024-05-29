@@ -16,15 +16,19 @@ import { SiLevelsdotfyi } from "react-icons/si";
 import SkillList from "../component/SkillList";
 import ProjectParticipantsPopup from "../popup/ProjectParticipantsPopup";
 import useRequestStore from "../store/request";
+import useUserStore from "../store/user";
+import SuccessPopup from "../popup/SuccessPopup";
 
 function ProjectPage() {
     const { project, isLoading, isError, isOwner, isMember, removeParticipant, loadProject} = useProjectStore();
+    const { loadUser } = useUserStore();
     const { principal } = useAuthStore();
     const navigate = useNavigate();
     const [isEditing, setIsEditing] = useState(false);
     const [isParticipantDisplayed, setIsParticipantDisplayed] = useState(false);
     const { sendJoinRequest, isRequestExists } = useRequestStore();
     const [isRequestSended, setIsRequestSended] = useState(false);
+    const [isSuccessMessageDisplayed, setIsSuccessMessageDisplayed] = useState(false);
 
     const handleLeaveProject = async () => {
         if (!principal || !project) {
@@ -34,20 +38,42 @@ function ProjectPage() {
         await removeParticipant(principal.id);
         navigate("/profile", {state: {email: principal.email }});
     }
+    
+    const handleOwnerClick = async () => {
+        if (!project) {
+            return;
+        }
+
+        await loadUser(project?.owner.email);
+        navigate("/profile");
+    }
+
+    const handleSendJoinRequest = async () => {
+        if (!project || !principal) {
+            return;
+        }
+
+        await sendJoinRequest(project.id, principal.id);
+        setIsRequestSended(true);
+        setIsSuccessMessageDisplayed(true);
+    }
 
     useEffect(() => {
         if(!project) {
             return;
         }
 
-        loadProject(project.id);
+        //loadProject(project.id);
         if(!principal) {
             setIsRequestSended(false);
             return;
         } else {
-            isRequestExists(project.id, principal.id).then((isRequestSended) => {setIsRequestSended(isRequestSended)});
+            isRequestExists(project.id, principal.id).then((isRequestSended) => {
+                console.log(isRequestSended);
+                setIsRequestSended(isRequestSended)
+            });
         }
-    }, []);
+    }, [project, principal, loadProject, isRequestExists]);
 
     if (isLoading) {
         return <LoadingPage/>;
@@ -94,12 +120,7 @@ function ProjectPage() {
                                             <Button text="Send Join Request" 
                                                 className="h-3/4 p-3 rounded-lg bg-custom-blue transition-all 
                                                     hover:scale-105 active:scale-95" 
-                                                onClick={()=>{
-                                                    if(!project || !principal)
-                                                        return;
-                                                    sendJoinRequest(project?.id, principal?.id);
-                                                    setIsRequestSended(true);
-                                                }}/>
+                                                onClick={handleSendJoinRequest}/>
                                         
                                     }    
                                 </div>
@@ -111,7 +132,11 @@ function ProjectPage() {
                             <div className="flex justify-center text-xl gap-2">
                                 <BsPersonFillGear className="text-3xl"/>
                                 <p className="font-light">Project owner: </p>
-                                <p className="font-light">{project?.owner.name}</p>
+                                <p className="font-light underline
+                                            cursor-pointer transition-all hover:scale-105 active:scale-95"
+                                    onClick={handleOwnerClick}>
+                                        {project?.owner.name}
+                                </p>
                             </div>
                             <div className="flex justify-center text-xl gap-2">
                                 <IoCalendarNumber className="text-3xl"/>
@@ -153,11 +178,11 @@ function ProjectPage() {
                     <h3 className="font-extrabold text-2xl">About:</h3>
                     <p>{project?.description}</p>
                 </div>
-                
             </div>
             {isEditing && <ProjectEditPopup onClose={()=>{setIsEditing(false)}} 
                                             onSave={() => {setIsEditing(false)}}/>}
             {isParticipantDisplayed && <ProjectParticipantsPopup onClose={()=>{setIsParticipantDisplayed(false)}}/>}
+            {isSuccessMessageDisplayed && <SuccessPopup onClose={() => {setIsSuccessMessageDisplayed(false)} }/>}
         </div>
     );
 }

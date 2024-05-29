@@ -24,7 +24,7 @@ interface RequestActions{
     isRequestExists: (projectId: number, userId: number) => Promise<boolean>;
 }
 
-const fetchReuests = async (projectId: number): Promise<Request[]> => {
+const fetchRequests = async (projectId: number): Promise<Request[]> => {
     const token = useAuthStore.getState().token;
     const response = await axios.get(`${ENDPOINT}/request/project/${projectId}`, {
         headers:{
@@ -57,7 +57,7 @@ const useRequestStore = create<RequestState & RequestActions>()(
                 }
 
                 try{
-                    const data = await fetchReuests(projectId); 
+                    const data = await fetchRequests(projectId); 
                     set({ requests: data, isLoading: false, isError: false })
                 } catch(error) {
                     set({ requests: [], isLoading: false, isError: true })
@@ -160,7 +160,7 @@ const useRequestStore = create<RequestState & RequestActions>()(
             }
         }),
         {
-            name: "requst-store",
+            name: "request-store",
             getStorage: () => localStorage,
             partialize: (state) => ({ requests: state.requests, isLoading: state.isLoading, isError: state.isError })
         }

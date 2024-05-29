@@ -28,7 +28,7 @@ function SignUpForm() {
 
     return (
         <form className="w-full h-full flex flex-col justify-around items-center">
-            <div className="flex flex-col gap-2">
+            <div className="w-1/3 flex flex-col gap-2">
                 <label>Username:</label>
                 <input className="text-black p-2 rounded-lg" 
                         {...register('username', { required: true, maxLength: 20, minLength: 5})} />
@@ -38,7 +38,7 @@ function SignUpForm() {
             </div>
 
 
-            <div className="flex flex-col gap-2">
+            <div className="w-1/3 flex flex-col gap-2">
                 <label htmlFor="email">Email:</label>
                 <input className="text-black p-2 rounded-lg" type="email" 
                     {...register('email', {required: true, pattern: /^\S+@\S+\.\S+$/i})} />
@@ -46,7 +46,7 @@ function SignUpForm() {
                 {errors.email?.type === 'pattern' && <span className="text-red-500">Email is not valid</span>}
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="w-1/3 flex flex-col gap-2">
                 <label>Password:</label>
                 <input className="text-black p-2 rounded-lg" type="password" 
                     {...register('password', {required: true, minLength: 5})} />
