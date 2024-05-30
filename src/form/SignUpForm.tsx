@@ -4,7 +4,7 @@ import useAuthStore from "../store/auth";
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../store/user";
 import axios from "axios";
-import { useState } from "react";
+
 
 const ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
@@ -22,23 +22,31 @@ function SignUpForm() {
 
 
     const checkEmailExists = async (email: string) => {
-        const response = await axios.get(`${ENDPOINT}/user/exists/email/${email}`);
-        if (response.status === 200) {
-            setError("email", { type: "manual", message: "Email is already in use" });
-        } else { 
+        try {
+            const response = await axios.get(`${ENDPOINT}/user/exists/email/${email}`);
+            if (response.status === 200) {
+                setError("email", { type: "manual", message: "Email is already in use" });
+            } else { 
+                clearErrors("email");
+            }
+        } catch (error) {
+            console.error("Error checking email existence:", error);
             clearErrors("email");
         }
-
     };
-
+    
     const checkUsernameExists = async (username: string) => {
+        try {
             const response = await axios.get(`${ENDPOINT}/user/exists/name/${username}`);
             if (response.status === 200) {
                 setError("username", { type: "manual", message: "Username is already in use" });    
             } else {
                 clearErrors("username");
             }
-
+        } catch (error) {
+            console.error("Error checking username existence:", error);
+            clearErrors("username");
+        }
     };
 
     const onSubmit: SubmitHandler<SignUpFormInputs> = async (data) => {

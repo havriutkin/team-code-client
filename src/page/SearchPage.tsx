@@ -77,10 +77,8 @@ function SearchPage() {
                 <h1 className="text-4xl font-extrabold mb-5">Search for projects</h1>
 
                 <div className="w-1/2 h-1/4 flex flex-col justify-around">
-                    <div className="w-full flex items-center justify-start gap-5">
-                        <SearchBar className="w-1/2" onChange={handleChangeName} />
-                        <Button className="w-1/2 h-full rounded-lg text-xl bg-custom-blue transition-all
-                                        hover:scale-105 active:scale-95" text="Create Project" onClick={() => { }} />
+                    <div className="w-2/3 flex items-center justify-start gap-5">
+                        <SearchBar className="w-full" onChange={handleChangeName} />
                     </div>
 
                     <div className="w-2/3 flex justify-between text-sm gap-1 relative">

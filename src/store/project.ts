@@ -28,6 +28,7 @@ interface ProjectActions {
     removeSkills: (skillIds: number[]) => Promise<void>;
     removeParticipants: (userId: number[]) => Promise<void>;
     removeParticipant: (userId: number) => Promise<void>;
+    createProject: (project: Project) => Promise<void>;
 }
 
 const fetchProject = async (id: number): Promise<Project> => {
@@ -184,6 +185,22 @@ const putProject = async (data: Project): Promise<void> => {
 
     if (response.status !== 200) {
         throw new Error("Error updating project");
+    }
+}
+
+const createProject = async (data: Project): Promise<Project> => {
+    console.log(data);
+    const token = useAuthStore.getState().token;
+    const response = await axios.post(`${ENDPOINT}/project`, data, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    if (response.status === 201) {
+        return response.data as Project;
+    } else {
+        throw new Error("Error creating project");
     }
 }
 
@@ -373,6 +390,27 @@ const useProjectStore = create<ProjectState & ProjectActions>()(
                 } catch (error) {
                     set({ isError: true, isLoading: false });
                     console.error("Error removing skills:", error);
+                }
+            },
+
+            createProject: async (project: Project) => {
+                set({ isError: false, isLoading: true });
+
+                if (!project) {
+                    set({ isError: true, isLoading: false });
+                    return;
+                }
+
+                try {
+                    const newProject = await createProject(project);
+                    set((state) => ({ 
+                        project: newProject, 
+                        projects: [ ...state.projects, newProject ], 
+                        isLoading: false 
+                    }));
+                } catch (error) {
+                    set({ isError: true, isLoading: false });
+                    console.error("Error creating project");
                 }
             }
         }),
