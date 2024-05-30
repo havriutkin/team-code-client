@@ -58,7 +58,7 @@ const useAuthStore = create<AuthState & AuthActions>()(
                     }
                 } catch (error) {
                     console.error(error);
-                    set({ isLoading: false, isError: true });
+                    set({ isLoading: false, isError: false });
                 }
             },
 
