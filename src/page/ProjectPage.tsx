@@ -86,7 +86,8 @@ function ProjectPage() {
             <div className="w-1/12">
                 <SideBar/>
             </div>
-            <div className="w-3/4 flex flex-col items-start">
+            <div className={`w-3/4 flex flex-col items-start 
+                ${isSuccessMessageDisplayed || isParticipantDisplayed || isEditing ? "blur-md" : ""}`}>
                 {  
                     isLoading ? 
                     <Loading size="xl"/>
@@ -184,7 +185,10 @@ function ProjectPage() {
                     </>
                 }
             </div>
-            <img src={GirlImage} width={300} className="absolute bottom-0 right-20"></img>
+            <img src={GirlImage} width={300} 
+                className={`absolute bottom-0 right-20 
+                        ${isSuccessMessageDisplayed || isParticipantDisplayed || isEditing ? "blur-md" : ""}`}>            
+            </img>
             {isEditing && <ProjectEditPopup onClose={()=>{setIsEditing(false)}} 
                                             onSave={() => {setIsEditing(false)}}/>}
             {isParticipantDisplayed && <ProjectParticipantsPopup onClose={()=>{setIsParticipantDisplayed(false)}}/>}

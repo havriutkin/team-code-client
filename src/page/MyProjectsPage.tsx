@@ -31,7 +31,8 @@ function MyProjectsPage() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5 }}
-                    className="w-3/4 h-full py-5 flex flex-col justify-start items-start gap-10">
+                    className={`w-3/4 h-full py-5 flex flex-col justify-start items-start gap-10
+                        ${isCreationActive && "blur-md"}`}>
                     <div className=" w-2/3 flex justify-between">
                         <h1 className="text-4xl font-extrabold mb-5">My Projects</h1>
                         <Button text="Create Project" 
