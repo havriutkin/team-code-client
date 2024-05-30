@@ -47,8 +47,9 @@ function NewProjectPopup({ onClose, onSave }: ProjectEditPopupProps) {
             };
 
             createProject(projectData).then(() => {
+                const finalSkillsToAdd = skillsToAdd.filter(skillId => !skillsToDelete.includes(skillId));
                 if (skillsToAdd.length !== 0) {
-                    addSkills(skillsToAdd);
+                    addSkills(finalSkillsToAdd);
                 }
             });
             onSave();

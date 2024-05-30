@@ -36,18 +36,20 @@ function MyProjectsPage() {
                         <h1 className="text-4xl font-extrabold mb-5">My Projects</h1>
                         <Button text="Create Project" 
                                             className=" w-36 h-3/4 max-h-14 rounded-lg text-xl bg-custom-blue transition-all 
-                                                        hover:scale-105 active:scale-95" 
+                                                        hover:scale-105 active:scale-95 font-bold" 
                                             onClick={() => { setisCreationActive(true)}}/>
                     </div>
                     <div className="w-full">
                         <h2 className="text-3xl font-bold mb-3">Owned Projects</h2>
-                        <ProjectList projects={projects.filter(project => project.owner.id === principal.id)} />
+                        <ProjectList projects={projects.filter(project => project.owner.id === principal.id)}
+                            className="w-full max-h-96 p-7 overflow-x-visible overflow-y-scroll scrollbar-thin" />
                     </div>
 
                     
                     <div className="w-full">
                         <h2 className="text-3xl font-bold mb-3">Participating Projects</h2>
-                        <ProjectList projects={projects.filter(project => project.owner.id !== principal.id)} />
+                        <ProjectList projects={projects.filter(project => project.owner.id !== principal.id)}
+                            className="w-full max-h-96 p-7 overflow-x-visible overflow-y-scroll scrollbar-thin" />
                     </div>
 
                 </motion.div>

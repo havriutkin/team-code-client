@@ -106,6 +106,11 @@ const useAuthStore = create<AuthState & AuthActions>()(
             logout: () => {
                 set({ principal: null, token: "", isLoading: false, isError: false });
                 localStorage.removeItem("token");
+                localStorage.removeItem("project-store");
+                localStorage.removeItem("user-store");
+                localStorage.removeItem("notification-store");
+                localStorage.removeItem("request-store");
+                localStorage.removeItem("auth-store");
             },
         }),
         {
