@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import useUserStore from "../store/user";
 import LoadingPage from "../page/LoadingPage";
 import { IoRemoveCircle } from "react-icons/io5";
+import User from "../model/UserModel";
+import { useNavigate } from "react-router-dom";
 
 interface ProjectParticipantsPopupProps {
     onClose: () => void;
@@ -12,8 +14,9 @@ interface ProjectParticipantsPopupProps {
 
 function ProjectParticipantsPopup({ onClose }: ProjectParticipantsPopupProps) {
     const { project, removeParticipants, loadProject } = useProjectStore();
-    const { users, loadProjectMembers, isLoading, isError } = useUserStore();
+    const { users, loadProjectMembers, isLoading, isError, loadUser } = useUserStore();
     const [usersToRemove, setUsersToRemove] = useState<number[]>([]);
+    const navigate = useNavigate();
 
     const handleUserRemove = (userId: number) => {
         setUsersToRemove([...usersToRemove, userId]);
@@ -34,6 +37,11 @@ function ProjectParticipantsPopup({ onClose }: ProjectParticipantsPopupProps) {
 
         onClose();
     }
+
+    const handleUserClick = async (user: User) => {
+        await loadUser(user.email);
+        navigate('/profile');
+    }  
 
     useEffect(() => {
         if (project) {
@@ -97,7 +105,10 @@ function ProjectParticipantsPopup({ onClose }: ProjectParticipantsPopupProps) {
 
                                 return (
                                     <li key={user.id} className="w-full flex items-center justify-between p-3 my-3 bg-custom-dark-gray rounded-lg">
-                                        <p className="font-semibold">{user.name}</p>
+                                        <p className="font-semibold underline cursor-pointer transition-all hover:scale-105 active:scale-95"
+                                            onClick={() => {handleUserClick(user)}}>
+                                            {user.name}
+                                        </p>
                                         <IoRemoveCircle className="text-2xl text-red-500 cursor-pointer"
                                                         onClick={() => {handleUserRemove(user.id)}}/>
                                     </li>
