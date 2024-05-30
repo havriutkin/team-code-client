@@ -403,7 +403,11 @@ const useProjectStore = create<ProjectState & ProjectActions>()(
 
                 try {
                     const newProject = await createProject(project);
-                    set({ project: newProject, isLoading: false });
+                    set((state) => ({ 
+                        project: newProject, 
+                        projects: [ ...state.projects, newProject ], 
+                        isLoading: false 
+                    }));
                 } catch (error) {
                     set({ isError: true, isLoading: false });
                     console.error("Error creating project");
