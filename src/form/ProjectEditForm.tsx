@@ -4,7 +4,6 @@ import { useState } from "react";
 import Skill from "../model/SkillModel";
 import Button from "../component/Button";
 import SkillList from "../component/SkillList";
-import { useNavigate } from "react-router-dom";
 
 enum ProjectLevel {
     EASY = 'EASY',
@@ -31,7 +30,6 @@ function ProjectEditForm({onClose, onSave}: ProjectEditPopupProps) {
     const { register, formState: {errors}, handleSubmit } = useForm<ProjectEditFormInput>();
     const [skillsToDelete, setSkillsToDelete] = useState<number[]>([]);
     const [skillsToAdd, setSkillsToAdd] = useState<Skill[]>([]);
-    const navigate = useNavigate();
 
     const onSubmit: SubmitHandler<ProjectEditFormInput> = async (data, e) => {
         e?.preventDefault();
@@ -48,7 +46,7 @@ function ProjectEditForm({onClose, onSave}: ProjectEditPopupProps) {
     }
 
     if (!project) {
-        navigate('/profile');
+        onClose();
         return;
     }
 
@@ -80,7 +78,7 @@ function ProjectEditForm({onClose, onSave}: ProjectEditPopupProps) {
                 <div className="w-full min-h-20 p-1 flex flex-col justify-between items-center pb-5 border-b-2">
                     <div className="w-full flex justify-start items-start">
                         <label htmlFor="status" className="w-1/4 text-xl">Active (not accepting requests if disabled):</label>
-                        <input className="w-1/2 text-black p-2 rounded-lg" type="checkbox" 
+                        <input className="w-1/2 h-1/2 flex items-center justify-center text-black p-2 rounded-lg" type="checkbox" 
                             defaultChecked={project.status}
                             {...register('status')} />
                     </div>

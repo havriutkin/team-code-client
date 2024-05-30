@@ -50,13 +50,11 @@ function ProjectParticipantsPopup({ onClose }: ProjectParticipantsPopupProps) {
     }, [project, loadProjectMembers]);
 
     if (!project) {
-        alert("Project not found");
         onClose();
         return;
     }
 
     if (isError) {
-        alert("Error loading project members");
         onClose();
         return;
     }

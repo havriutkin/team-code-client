@@ -30,7 +30,7 @@ TODO: clear data form localStorage on logout
 const useAuthStore = create<AuthState & AuthActions>()(
     persist(
         (set, get) => ({
-            token: localStorage.getItem("token") || "",
+            token: "",
             principal: null,
             isLoading: false,
             isError: false,
@@ -63,14 +63,12 @@ const useAuthStore = create<AuthState & AuthActions>()(
             },
 
             register: async (username: string, email: string, password: string) => {
-                localStorage.removeItem("token");
                 set({ isLoading: true, isError: false });
                 try {
                     const response = await axios.post(`${ENDPOINT}/auth/register`, { name: username, email, password });
                     if (response.status === 200) {
                         const token = response.data.token;
                         set({ token, isLoading: false });
-                        localStorage.setItem("token", token);
                         get().fetchPrincipal();
                     } else {
                         set({ isLoading: false, isError: true });
@@ -82,14 +80,12 @@ const useAuthStore = create<AuthState & AuthActions>()(
             },
 
             login: async (email: string, password: string) => {
-                localStorage.removeItem("token");
                 set({ isLoading: true, isError: false });
                 try {
                     const response = await axios.post(`${ENDPOINT}/auth/login`, { email, password });
                     if (response.status === 200) {
                         const token = response.data.token;
                         set({ token, isLoading: false });
-                        localStorage.setItem("token", token);
                         await get().fetchPrincipal();
                     } else {
                         set({ isLoading: false, isError: true });

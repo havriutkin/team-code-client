@@ -12,7 +12,7 @@ import NewProjectPopup from "../popup/NewProjectPopup";
 function MyProjectsPage() {
     const { projects, isLoading, isError} = useProjectStore();
     const { principal } = useAuthStore();
-    const [isCreationActive, setisCreationActive] = useState(false);
+    const [isCreationActive, setIsCreationActive] = useState(false);
 
     if (isLoading) {
         return <LoadingPage />
@@ -36,9 +36,9 @@ function MyProjectsPage() {
                     <div className=" w-2/3 flex justify-between">
                         <h1 className="text-4xl font-extrabold mb-5">My Projects</h1>
                         <Button text="Create Project" 
-                                            className=" w-36 h-3/4 max-h-14 rounded-lg text-xl bg-custom-blue transition-all 
+                                            className="w-36 h-3/4 max-h-14 rounded-lg text-xl bg-custom-blue transition-all 
                                                         hover:scale-105 active:scale-95 font-bold" 
-                                            onClick={() => { setisCreationActive(true)}}/>
+                                            onClick={() => { setIsCreationActive(true)}}/>
                     </div>
                     <div className="w-full">
                         <h2 className="text-3xl font-bold mb-3">Owned Projects</h2>
@@ -54,7 +54,7 @@ function MyProjectsPage() {
                     </div>
 
                 </motion.div>
-                {isCreationActive && <NewProjectPopup onClose={() => setisCreationActive(false)} onSave={() => {setisCreationActive(false)}}/>}
+                {isCreationActive && <NewProjectPopup onClose={() => setIsCreationActive(false)} onSave={() => {setIsCreationActive(false)}}/>}
             </div>
     );
 }

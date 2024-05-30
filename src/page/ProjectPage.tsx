@@ -37,7 +37,8 @@ function ProjectPage() {
         }
 
         await removeParticipant(principal.id);
-        navigate("/profile", {state: {email: principal.email }});
+        await loadUser(principal.email);
+        navigate("/profile");
     }
     
     const handleOwnerClick = async () => {
@@ -58,6 +59,13 @@ function ProjectPage() {
         setIsRequestSended(true);
         setIsSuccessMessageDisplayed(true);
     }
+
+    useEffect(() => {
+        if (!project) {
+            return;
+        }
+        loadProject(project?.id)
+    }, []);
 
     useEffect(() => {
         if(!project) {

@@ -25,7 +25,7 @@ function ProjectView({project, className} : ProjectViewProps) {
             </div>
 
             <div className="pl-4 h-3/4 flex flex-col items-start justify-center">
-                <p className="text-lg">{project.description.slice(0, 100) + "..."}</p>
+                <p className="text-lg">{project.description.slice(0, 80) + "..."}</p>
                 <SkillList skills={project.skills.slice(0, 7)} isEdit={false} className="text-sm pr-3 py-3 flex w-auto scrollbar-none"/>
                 <div className="text-xs flex justify-start items-end gap-4">
                     {project.status ? 

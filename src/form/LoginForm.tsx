@@ -20,7 +20,7 @@ function LoginForm() {
             await login(data.email, data.password);
             await loadUser(data.email);
             navigate('/profile');
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error(error);
             setError("password", { type: "manual", message: "Invalid email or password. Please try again" });
         }

@@ -189,7 +189,6 @@ const putProject = async (data: Project): Promise<void> => {
 }
 
 const createProject = async (data: Project): Promise<Project> => {
-    console.log(data);
     const token = useAuthStore.getState().token;
     const response = await axios.post(`${ENDPOINT}/project`, data, {
         headers: {

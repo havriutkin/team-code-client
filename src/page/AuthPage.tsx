@@ -3,13 +3,10 @@ import Button from "../component/Button";
 import LoginForm from "../form/LoginForm";
 import SignUpForm from "../form/SignUpForm";
 import { AnimatePresence, easeInOut, motion } from "framer-motion";
-import useAuthStore from "../store/auth";
-import ErrorPage from "./ErrorPage";
 
 function AuthPage() {
     const [isLoginForm, setIsLoginForm] = useState(false);
     const [isAnimationGoing, setIsAnimationGoing] = useState(false);
-    const { isError } = useAuthStore();
 
     const handleFormChange = (target: string) => {
         if (target === "Sign Up" && isLoginForm) {
@@ -19,10 +16,6 @@ function AuthPage() {
             setIsAnimationGoing(true);
             setIsLoginForm(true);
         }
-    }
-
-    if (isError) {
-        return <ErrorPage/>
     }
 
     return (
