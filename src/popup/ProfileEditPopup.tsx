@@ -2,6 +2,8 @@ import ProfileEditForm from "../form/ProfileEditForm";
 import { motion, AnimatePresence } from "framer-motion";
 import useUserStore from "../store/user";
 import User from "../model/UserModel";
+import useAuthStore from "../store/auth";
+import { useNavigate } from "react-router-dom";
 
 enum Experience {
     BEGINNER = "BEGINNER",
@@ -25,6 +27,8 @@ interface ProfileEditPopupProps {
 
 function ProfileEditPopup({ onClose, onSave }: ProfileEditPopupProps) {
     const {user, updateUser, addSkills, removeSkills, loadUser} = useUserStore();
+    const { principal, logout } = useAuthStore();
+    const navigate = useNavigate();
 
     const handleSave = async (data: ProfileEditFormInput, skillsToAdd: number[], skillsToDelete: number[]) => {
         if (!user) {
@@ -50,10 +54,17 @@ function ProfileEditPopup({ onClose, onSave }: ProfileEditPopupProps) {
         if (skillsToDelete.length !== 0) {
             await removeSkills(skillsToDelete);
         }
-
-        await loadUser(user.email);  // Reload user to get the updated data
-
-        onSave();
+        
+        console.log(`User email: ${data.email}, Principal email: ${principal?.email}`)
+        if (data.email !== principal?.email) {
+            console.log("Logging out");
+            logout();
+            alert("Please log in again to continue")
+            navigate('/auth');
+        } else {
+            await loadUser(user.email);  // Reload user to get the updated data
+            onSave();
+        }
     }
 
     return (
