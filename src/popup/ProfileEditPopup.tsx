@@ -55,9 +55,7 @@ function ProfileEditPopup({ onClose, onSave }: ProfileEditPopupProps) {
             await removeSkills(skillsToDelete);
         }
         
-        console.log(`User email: ${data.email}, Principal email: ${principal?.email}`)
         if (data.email !== principal?.email) {
-            console.log("Logging out");
             logout();
             alert("Please log in again to continue")
             navigate('/auth');
